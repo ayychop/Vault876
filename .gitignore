@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+*.local
+
+# Tooling scratch
+.playwright-mcp
+*.png.tmp
+
+# Impeccable runtime dirs (keep PRODUCT.md, DESIGN.md, surfaces/, config.json)
+.impeccable/questions
+.impeccable/mocks
+.impeccable/review
+.impeccable/build
+.impeccable/critique
+.impeccable/config.local.json
+
+# Vendored plugin skills (reinstallable via plugin marketplace) + caches
+.claude/skills
+.claude/plugins
+.impeccable/hook.cache.json

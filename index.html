@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Set the theme before paint to avoid a flash. Defaults to dark. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('vault876-theme')
+          document.documentElement.classList.toggle('dark', t !== 'light')
+        } catch (e) {
+          document.documentElement.classList.add('dark')
+        }
+      })()
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VAULT 876 — premium hair and beauty for all hair types. Aylesbury's luxury Black-owned salon. Wig installations, braids, locs, relaxers, lashes and more."
+    />
+    <meta name="theme-color" content="#0A0A0A" />
+
+    <!-- Fonts: Bodoni Moda (Didone display serif) + Inter (UI sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>VAULT 876 — Look Good. Feel Good.</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
