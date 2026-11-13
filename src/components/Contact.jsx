@@ -40,10 +40,9 @@ export default function Contact() {
             className="relative min-h-[22rem] lg:min-h-[32rem]"
           >
             <ImagePlaceholder
-              plaque
               className="h-full w-full rounded-2xl"
               label="The Studio"
-              caption="Where the work happens."
+              tag="Coming soon"
             />
           </motion.div>
 

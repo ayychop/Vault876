@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
 import { Link } from 'react-router-dom'
 import { site } from '../lib/site.js'
 import { IconPhone } from './icons.jsx'
-import ImagePlaceholder from './ImagePlaceholder.jsx'
+import watermarkArt from '../assets/crest-emblem.png'
 import MagneticButton from './MagneticButton.jsx'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -52,16 +52,26 @@ export default function Hero() {
       ref={ref}
       className="relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-canvas"
     >
-      {/* Full-bleed branded placeholder — parallax watermark field, standing in
-          until the salon's own hero photography lands. */}
+      {/* Oversized crest watermark — a huge, faint texture pushed far behind the
+          headline (not a competing element). Theme-aware via CSS filter only:
+          a subtle DARK GHOST on the light ground, a boosted GOLD mark on the
+          obsidian ground. */}
       <motion.div
-        initial={{ scale: 1.12, opacity: 0 }}
+        initial={{ scale: 1.14, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, ease: EASE }}
         style={reduce ? { willChange: 'transform' } : { y: imgY, scale: imgScale, willChange: 'transform' }}
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden
       >
-        <ImagePlaceholder className="h-full w-full" watermark logoSize={360} />
+        <img
+          src={watermarkArt}
+          alt=""
+          draggable={false}
+          loading="eager"
+          decoding="async"
+          className="w-[150vw] max-w-[1300px] select-none object-contain opacity-[0.06] [filter:brightness(0)] dark:opacity-[0.16] dark:[filter:none] sm:w-[95vw]"
+        />
       </motion.div>
 
       {/* Cinematic grade — theme-aware vignette that keeps the headline readable
@@ -78,8 +88,8 @@ export default function Hero() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="font-display font-black leading-[0.86] tracking-[-0.055em] text-ink"
-          style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
+          className="font-display font-black leading-[0.88] tracking-[-0.05em] text-ink"
+          style={{ fontSize: 'clamp(3.25rem, 10vw, 8.5rem)' }}
         >
           <span className="block">
             <Word>
@@ -99,7 +109,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           transition={{ delay: 1.1 }}
-          className="mt-8 max-w-md font-sans text-[0.78rem] font-light uppercase tracking-[0.42em] text-ink/70"
+          className="mt-10 max-w-md font-sans text-[0.78rem] font-light uppercase tracking-[0.42em] text-ink/70"
         >
           Luxury hair &amp; beauty — {site.address.city}
         </motion.p>
@@ -109,7 +119,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           transition={{ delay: 1.3 }}
-          className="mt-11 flex flex-col items-center gap-4 sm:flex-row"
+          className="mt-12 flex flex-col items-center gap-4 sm:flex-row"
         >
           {/* Book Now is persistently available in the mobile sticky bar, so the
               hero's primary mobile action is Call Salon — no duplicate CTA. */}

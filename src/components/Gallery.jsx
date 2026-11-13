@@ -44,9 +44,8 @@ export default function Gallery() {
               className={`group relative ${w.span}`}
             >
               <ImagePlaceholder
-                plaque
                 label={w.label}
-                logoSize={w.logo}
+                tag="Portfolio pending"
                 className="h-full w-full rounded-2xl transition-transform duration-700 ease-luxe group-hover:scale-[1.015]"
               />
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 transition-all duration-500 group-hover:ring-gold/40" />

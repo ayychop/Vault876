@@ -1,89 +1,76 @@
-import BrandMark from './BrandMark.jsx'
+import { motion, useReducedMotion } from 'framer-motion'
 import logoUrl from '../assets/vault-logo-final.png'
 
-// Branded "photography coming soon" slot. The definitive placeholder design is a
-// solid OBSIDIAN PLAQUE (gold border) holding an oversized gold crest, with the
-// label + caption sitting BELOW it — a deliberate, expensive plaque that reads
-// identically in light and dark (gold on black looks premium on any canvas).
-// `watermark` mode is the one exception: a full-bleed faint crest for the hero
-// background.
+// Cinematic "photography coming soon" slot — a seamless poster, not a boxed
+// plaque. A rich gradient ground, a massive crest watermark embossed into it
+// (mix-blend + low opacity) that slowly BREATHES, and editorial text in the
+// bottom-left corner.
+//   • dark  — warm obsidian gradient, gold crest screened in, white title
+//   • light — soft cream gradient with a gold tint, charcoal crest, black title
+//
+// The breathing opacity lives on the wrapper (a relative multiplier) while the
+// image keeps its theme-aware base opacity + blend mode — so the effect reads
+// correctly in both themes.
 export default function ImagePlaceholder({
   className = '',
-  logoSize = 120,
-  watermark = false,
-  plaque = false,
   label = null,
-  caption = null,
+  tag = 'Coming soon',
   children,
 }) {
-  // ---- Hero watermark: full-bleed faint gold crest (not a plaque) ----
-  if (watermark) {
-    return (
-      <div
-        className={`relative overflow-hidden bg-canvas ${className}`}
-        role="img"
-        aria-label="VAULT 876"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.1),_transparent_68%)]" />
-        <div className="placeholder-sheen pointer-events-none absolute inset-0" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <BrandMark
-            size={logoSize}
-            className="opacity-[0.22] [filter:saturate(1.1)] dark:opacity-[0.28] dark:[filter:none]"
-          />
-        </div>
-        {children}
-      </div>
-    )
-  }
+  const reduce = useReducedMotion()
 
-  // ---- Plaque placeholder: obsidian plaque + oversized crest + text below ----
   return (
     <div
-      className={`relative flex flex-col items-center justify-center gap-6 overflow-hidden bg-surface p-7 text-center ${className}`}
       role="img"
       aria-label={label ? `${label} — photography coming soon` : 'Photography coming soon'}
+      className={`relative flex items-center justify-center overflow-hidden bg-[radial-gradient(125%_120%_at_28%_15%,#faf6ee,#ece5d6_74%)] dark:bg-[radial-gradient(125%_120%_at_28%_15%,#1c1811,#0a0a0a_66%)] ${className}`}
     >
-      {/* faint warm bloom so the panel is never a flat void */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.08),_transparent_72%)]" />
+      {/* warm gold wash pooling toward a corner — cinematic depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_70%_at_78%_92%,rgba(212,175,55,0.14),transparent_62%)]" />
+      {/* slow diagonal sheen */}
       <div className="placeholder-sheen pointer-events-none absolute inset-0" />
 
-      {/* The obsidian plaque — oversized gold crest inside a gold-bordered coin */}
-      <div className="relative flex aspect-square w-[62%] min-w-[128px] max-w-[232px] items-center justify-center rounded-[1.7rem] bg-[#0A0A0A] shadow-[0_24px_60px_-18px_rgba(0,0,0,0.7)] ring-1 ring-gold/45">
-        {/* soft inner gold bloom */}
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_50%_42%,_rgba(212,175,55,0.16),_transparent_66%)]" />
+      {/* Massive crest watermark, embossed into the ground and slowly breathing */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        style={{ willChange: 'transform, opacity' }}
+        animate={
+          reduce
+            ? {}
+            : { opacity: [0.72, 1, 0.72], scale: [1, 1.04, 1], x: [0, 5, 0] }
+        }
+        transition={{ duration: 5.5, ease: 'easeInOut', repeat: Infinity }}
+      >
         <img
           src={logoUrl}
           alt=""
-          aria-hidden
           draggable={false}
           loading="lazy"
           decoding="async"
-          className="relative w-[82%] select-none object-contain"
-          style={{ filter: 'drop-shadow(0 6px 22px rgba(212,175,55,0.35))' }}
+          className="w-[84%] max-w-[480px] -translate-y-[7%] select-none object-contain opacity-[0.1] mix-blend-multiply [filter:brightness(0)] dark:opacity-[0.22] dark:mix-blend-screen dark:[filter:none]"
         />
-        {/* crisp inner hairline */}
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-gold/15" />
-      </div>
+      </motion.div>
 
-      {/* Label + caption, below the plaque */}
-      {(label || caption) && (
-        <div className="relative max-w-xs">
-          {label && (
-            <span className="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-gold">
-              {label}
-            </span>
-          )}
-          {caption && (
-            <p className="mt-2 font-display text-xl leading-tight text-ink/90">
-              {caption}
-            </p>
+      {/* Editorial text — bottom-left corner */}
+      {label && (
+        <div className="absolute bottom-0 left-0 p-7 text-left sm:p-8">
+          <h3 className="font-display text-3xl font-bold leading-[0.95] text-ink sm:text-[2.6rem]">
+            {label}
+          </h3>
+          {tag && (
+            <motion.p
+              initial={{ opacity: 0, y: 6 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-3 font-sans text-[0.62rem] font-semibold uppercase tracking-[0.36em] text-gold"
+            >
+              {tag}
+            </motion.p>
           )}
         </div>
       )}
-
-      {/* hairline frame around the whole card */}
-      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-ink/10" />
       {children}
     </div>
   )
