@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { MotionConfig } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { MotionConfig, AnimatePresence, motion } from 'framer-motion'
 import Lenis from 'lenis'
 import Landing from './pages/Landing.jsx'
 import Booking from './pages/Booking.jsx'
@@ -8,14 +8,22 @@ import EntryGate from './components/EntryGate.jsx'
 import BookNow from './components/BookNow.jsx'
 import ScrollThread from './components/ScrollThread.jsx'
 import CursorGlow from './components/CursorGlow.jsx'
+import BackToTop from './components/BackToTop.jsx'
+
+const EASE = [0.16, 1, 0.3, 1]
 
 export default function App() {
+  const location = useLocation()
+  const lenisRef = useRef(null)
+
   // Buttery inertial scrolling via Lenis — disabled when the visitor prefers
   // reduced motion, and wired so in-page anchors glide instead of jumping.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true, wheelMultiplier: 1 })
+    lenisRef.current = lenis
+    window.__vaultLenis = lenis
     let raf
     const loop = (t) => {
       lenis.raf(t)
@@ -39,8 +47,17 @@ export default function App() {
       cancelAnimationFrame(raf)
       document.removeEventListener('click', onAnchorClick)
       lenis.destroy()
+      lenisRef.current = null
+      if (window.__vaultLenis === lenis) delete window.__vaultLenis
     }
   }, [])
+
+  // Always land at the top when the route changes (works with or without Lenis).
+  useEffect(() => {
+    const l = lenisRef.current
+    if (l) l.scrollTo(0, { immediate: true })
+    else window.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
     // Respect the visitor's reduced-motion preference across every animation.
@@ -58,12 +75,28 @@ export default function App() {
       <ScrollThread />
       {/* First-visit splash — self-gates on sessionStorage */}
       <EntryGate />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/booking" element={<Booking />} />
-      </Routes>
+
+      {/* Refined page transitions — an opacity crossfade (no transform, so the
+          fixed navbar/book-bar keep their positioning) between routes. */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.32, ease: EASE }}
+        >
+          <Routes location={location}>
+            <Route path="/" element={<Landing />} />
+            <Route path="/booking" element={<Booking />} />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
+
       {/* Always-on Book Now (hides itself on the booking flow) */}
       <BookNow />
+      {/* Desktop return-to-top */}
+      <BackToTop />
     </MotionConfig>
   )
 }

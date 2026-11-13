@@ -37,12 +37,19 @@ export default function Services() {
           viewport={inView}
           className="border-t border-ink/12"
         >
-          {services.map((s) => (
+          {services.map((s, i) => (
             <motion.li key={s.slug} variants={fadeUp} className="border-b border-ink/12">
               <Link
                 to={`/booking?service=${s.slug}`}
-                className="group relative flex items-center gap-6 overflow-hidden rounded-2xl px-4 py-8 transition-all duration-500 ease-luxe hover:scale-[1.012] hover:bg-gold/[0.04] hover:shadow-[0_26px_70px_-30px_rgba(212,175,55,0.6)]"
+                className="group relative flex items-center gap-4 overflow-hidden rounded-2xl px-4 py-8 transition-all duration-500 ease-luxe hover:scale-[1.012] hover:bg-gold/[0.04] hover:shadow-[0_26px_70px_-30px_rgba(212,175,55,0.6)] sm:gap-6"
               >
+                {/* Editorial menu index — faint, slides + warms to gold on hover */}
+                <span
+                  aria-hidden
+                  className="shrink-0 self-start pt-1.5 font-display text-sm tabular-nums text-ink/25 transition-all duration-500 ease-luxe group-hover:translate-x-0.5 group-hover:text-gold sm:text-base"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1.5">
                     <h3

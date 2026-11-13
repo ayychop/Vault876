@@ -65,6 +65,7 @@ export default function EntryGate() {
                   'conic-gradient(from 0deg, rgba(212,175,55,0) 0deg, rgba(212,175,55,0.20) 65deg, rgba(231,204,110,0.34) 135deg, rgba(212,175,55,0.10) 215deg, rgba(212,175,55,0) 320deg)',
                 filter: 'blur(64px)',
                 opacity: 0.65,
+                willChange: 'transform',
               }}
               animate={reduce ? {} : { rotate: 360 }}
               transition={{ duration: 24, ease: 'linear', repeat: Infinity }}
@@ -77,6 +78,7 @@ export default function EntryGate() {
                   'conic-gradient(from 180deg, rgba(212,175,55,0) 0deg, rgba(231,204,110,0.22) 120deg, rgba(212,175,55,0) 260deg)',
                 filter: 'blur(52px)',
                 opacity: 0.5,
+                willChange: 'transform',
               }}
               animate={reduce ? {} : { rotate: -360 }}
               transition={{ duration: 34, ease: 'linear', repeat: Infinity }}
@@ -115,6 +117,10 @@ export default function EntryGate() {
               src={logoFull}
               alt="VAULT 876 — Hair & Beauty"
               draggable={false}
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              style={{ willChange: 'transform, filter' }}
               className="w-[min(80vw,580px)] select-none"
               animate={
                 reduce

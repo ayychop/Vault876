@@ -58,7 +58,7 @@ export default function Hero() {
         initial={{ scale: 1.12, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, ease: EASE }}
-        style={reduce ? undefined : { y: imgY, scale: imgScale }}
+        style={reduce ? { willChange: 'transform' } : { y: imgY, scale: imgScale, willChange: 'transform' }}
         className="absolute inset-0"
       >
         <ImagePlaceholder className="h-full w-full" watermark logoSize={360} />
@@ -71,7 +71,7 @@ export default function Hero() {
 
       {/* Content */}
       <motion.div
-        style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
+        style={reduce ? undefined : { y: copyY, opacity: copyOpacity, willChange: 'transform, opacity' }}
         className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-5 text-center sm:px-8"
       >
         <motion.h1

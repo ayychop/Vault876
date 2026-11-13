@@ -24,6 +24,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Never allow a stray wide element to produce a horizontal scrollbar. */
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

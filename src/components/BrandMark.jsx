@@ -24,12 +24,17 @@ export default function BrandMark({ size = 40, glow = false, className = '' }) {
         src={logoUrl}
         alt="VAULT 876 — Hair & Beauty"
         draggable={false}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
         className="relative h-full w-auto select-none object-contain"
-        style={
-          glow
+        style={{
+          // Reserve width up front (crest is 4:3) so it never shifts layout or pops in.
+          aspectRatio: '4 / 3',
+          ...(glow
             ? { filter: 'drop-shadow(0 6px 22px rgba(212,175,55,0.3))' }
-            : undefined
-        }
+            : null),
+        }}
       />
     </span>
   )

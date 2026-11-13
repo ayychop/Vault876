@@ -78,12 +78,12 @@ export default function Navbar() {
           </div>
 
           {/* Mobile controls */}
-          <div className="flex items-center gap-1.5 md:hidden">
+          <div className="flex shrink-0 items-center gap-2 pl-3 md:hidden">
             <ThemeToggle />
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="flex h-10 w-10 items-center justify-center text-ink"
+              className="flex h-10 w-10 shrink-0 items-center justify-center text-ink"
               aria-label="Open menu"
             >
               <IconMenu className="h-6 w-6" />

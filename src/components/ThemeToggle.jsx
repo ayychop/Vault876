@@ -25,18 +25,20 @@ export default function ThemeToggle({ className = '' }) {
         style={{ left: dark ? '0.25rem' : '50%' }}
       />
       <span
-        className={`relative z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors duration-300 ${
+        className={`relative z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1.5 min-[400px]:px-3 transition-colors duration-300 ${
           dark ? 'text-obsidian' : 'text-ink/55'
         }`}
       >
-        <Moon className="h-3.5 w-3.5" strokeWidth={2} /> Dark
+        <Moon className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+        <span className="hidden min-[400px]:inline">Dark</span>
       </span>
       <span
-        className={`relative z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors duration-300 ${
+        className={`relative z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1.5 min-[400px]:px-3 transition-colors duration-300 ${
           dark ? 'text-ink/55' : 'text-obsidian'
         }`}
       >
-        <Sun className="h-3.5 w-3.5" strokeWidth={2} /> Light
+        <Sun className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+        <span className="hidden min-[400px]:inline">Light</span>
       </span>
     </button>
   )
