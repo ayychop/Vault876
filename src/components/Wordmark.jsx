@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import emblem from '../assets/crest-emblem-square.png'
-import vMask from '../assets/logo-v.png'
+import vaMask from '../assets/logo-va.png'
 
 // VAULT 876 navbar lockup: a fixed-size obsidian "coin" + typography wordmark.
 //   coin    — a perfect circle (#0A0A0A) with a 1px gold ring, holding the gold
@@ -49,13 +49,13 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
           className={`wordmark-type flex items-baseline justify-center gap-[0.12em] font-logo font-black uppercase leading-none tracking-[-0.02em] [font-variation-settings:'opsz'_96] ${s.main}`}
         >
           <span className="text-ink">
-            <span className="sr-only">V</span>
+            <span className="sr-only">VA</span>
             <span
-              className="logo-v"
-              style={{ WebkitMaskImage: `url(${vMask})`, maskImage: `url(${vMask})` }}
+              className="logo-va"
+              style={{ WebkitMaskImage: `url(${vaMask})`, maskImage: `url(${vaMask})` }}
               aria-hidden
             />
-            AULT
+            ULT
           </span>
           <span className="text-gold transition-colors duration-300 group-hover:text-gold-soft">
             876

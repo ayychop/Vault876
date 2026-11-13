@@ -349,16 +349,17 @@
     animation: wordmark-type-glow 4s ease-in-out infinite;
     will-change: filter;
   }
-  /* Her signature swash "V" — pixel-traced from the original logo and recoloured
-     with currentColor so it flips white/black with the theme exactly like the
-     Bodoni "AULT" beside it. Sized in em so it tracks every nav size; the vertex
-     and curl hang just below the baseline like a dropped display capital. */
-  .logo-v {
+  /* Her signature "VA" ligature — pixel-traced from the original logo (the V's
+     swash overlapping the A exactly as she drew it) and recoloured with
+     currentColor so it flips white/black with the theme like the Bodoni "ULT"
+     beside it. Sized in em so it tracks every nav size; the curl and vertices
+     hang just below the baseline like the original dropped display capitals. */
+  .logo-va {
     display: inline-block;
-    height: 1.32em;
-    aspect-ratio: 0.6527;
-    margin-right: -0.02em;
-    vertical-align: -0.26em;
+    height: 0.8em;
+    aspect-ratio: 1.3118;
+    margin-right: 0.03em;
+    vertical-align: -0.05em;
     background-color: currentColor;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;

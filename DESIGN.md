@@ -17,7 +17,7 @@ typography:
     fontWeight: 900
     opticalSize: 96
     letterSpacing: "-0.02em"
-    note: "VAULT 876 navbar wordmark only. Extreme-contrast Didone cloning the client's logo lettering; paired with a pixel-traced swash 'V' (src/assets/logo-v.png) masked in currentColor."
+    note: "VAULT 876 navbar wordmark only. Extreme-contrast Didone cloning the client's logo lettering; paired with a pixel-traced 'VA' ligature (src/assets/logo-va.png) masked in currentColor, followed by live 'ULT 876' text."
   display:
     fontFamily: '"Playfair Display", Georgia, serif'
     fontSize: "clamp(2.9rem, 9.5vw, 7.5rem)"
@@ -149,7 +149,7 @@ A monochrome obsidian-and-white ground carrying one warm metallic accent; everyt
 **Character:** An editorial contrast of registers — a warm, high-contrast Didone serif for the expensive voice, a heavy ATL-poster sans shouting the service names, and a quiet geometric sans for everything functional. The serif carries warmth and couture; the poster caps carry swagger; Inter stays out of the way. The wordmark stands apart in a sharper Didone (Bodoni Moda) because it is a literal clone of the salon's logo, not body voice.
 
 ### Hierarchy
-- **Wordmark** (Bodoni Moda 900, optical size 96, uppercase, tracking −0.02em): The VAULT 876 navbar lockup only. "VAULT" is theme-aware (`currentColor`), "876" is gold. The leading **"V" is a pixel-traced swash** of the client's own logo (`src/assets/logo-v.png`), applied as a `currentColor` mask so it flips with the theme and glows with the breathing gold bloom. Below it, "HAIR & BEAUTY" runs as a tiny wide-tracked Inter caps line flanked by gold hairlines.
+- **Wordmark** (Bodoni Moda 900, optical size 96, uppercase, tracking −0.02em): The VAULT 876 navbar lockup only. "VAULT" is theme-aware (`currentColor`), "876" is gold. The leading **"VA" is a pixel-traced ligature** of the client's own logo — her V-swash overlapping the A exactly as drawn (`src/assets/logo-va.png`) — applied as a `currentColor` mask so it flips with the theme and glows with the breathing gold bloom; "ULT 876" follows as live Bodoni text, baseline- and cap-aligned to the ligature. Below it, "HAIR & BEAUTY" runs as a tiny wide-tracked Inter caps line flanked by gold hairlines.
 - **Display** (Playfair Display 900, `clamp(2.9rem, 9.5vw, 7.5rem)`, line-height 0.9, tracking −0.055em): Hero and page-opening headlines. Set very tight and very large, often with a single word italicized at medium weight and the terminal period in gold.
 - **Headline** (Playfair Display 600, `clamp(1.85rem, 4.2vw, 3rem)`, line-height 1.04, tracking −0.045em): Section and booking-step titles ("The Menu", "Choose your services").
 - **Accent / Service Name** (Montserrat 800, `clamp(1.4rem, 3.8vw, 2.4rem)`, uppercase, line-height 0.95): The six service names in the editorial row-list. Poster-weight, warms to gold on hover. Uses the client's exact names — never rewritten.
