@@ -244,7 +244,7 @@ export default function Booking() {
                       <span className="h-2 w-2 rounded-full bg-gold" /> Open
                     </span>
                     <span className="ml-4 inline-flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-amber-400/80" /> Limited
+                      <span className="h-2 w-2 rounded-full border border-gold" /> Limited
                     </span>
                     <span className="ml-4 inline-flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full bg-ink/25" /> Full
@@ -306,7 +306,7 @@ export default function Booking() {
                                 <span className="font-medium">{slot}</span>
                                 <span
                                   className={`h-2 w-2 rounded-full ${
-                                    st === 'open' ? 'bg-gold' : st === 'limited' ? 'bg-amber-400/80' : 'bg-ink/25'
+                                    st === 'open' ? 'bg-gold' : st === 'limited' ? 'border border-gold' : 'bg-ink/25'
                                   }`}
                                 />
                               </button>
