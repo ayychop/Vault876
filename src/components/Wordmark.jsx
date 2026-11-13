@@ -28,7 +28,7 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
           the coin (transparent margins clipped) so it reads like a minted coin,
           not a small sticker floating in a black circle. */}
       <span
-        className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0A0A0A] ring-1 ring-gold/55 transition-[box-shadow,transform] duration-300 ease-luxe group-hover:ring-gold group-hover:shadow-[0_0_18px_rgba(212,175,55,0.4)] ${s.coin}`}
+        className={`wordmark-coin relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0A0A0A] ${s.coin}`}
       >
         <img
           src={emblem}
@@ -41,23 +41,26 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
         />
       </span>
 
-      {/* Typographic wordmark */}
-      <span className="inline-flex min-w-0 flex-col leading-none">
+      {/* Typographic wordmark — a CSS clone of the crest lettering */}
+      <span className="inline-flex min-w-0 flex-col items-stretch leading-none">
+        {/* Line 1 — "VAULT 876" in heavy high-contrast Playfair, tight kerning */}
         <span
-          className={`flex items-baseline gap-[0.26em] font-display font-black uppercase leading-none tracking-[0.01em] ${s.main}`}
+          className={`wordmark-type flex items-baseline justify-center gap-[0.2em] font-display font-black uppercase leading-none tracking-[-0.005em] ${s.main}`}
         >
           <span className="text-ink">VAULT</span>
           <span className="text-gold transition-colors duration-300 group-hover:text-gold-soft">
             876
           </span>
         </span>
-        <span className={`flex items-center gap-2 ${s.gap}`}>
+        {/* Line 2 — "HAIR & BEAUTY" flanked by gold hairlines, spanning line 1 */}
+        <span className={`flex items-center gap-[0.5em] ${s.gap}`}>
+          <span className="h-px flex-1 bg-gradient-to-l from-gold/70 via-gold/55 to-transparent" />
           <span
             className={`whitespace-nowrap font-sans font-semibold uppercase tracking-[0.3em] text-ink/70 ${s.sub}`}
           >
             Hair&nbsp;&amp;&nbsp;Beauty
           </span>
-          <span className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/55" />
+          <span className="h-px flex-1 bg-gradient-to-r from-gold/70 via-gold/55 to-transparent" />
         </span>
       </span>
     </Link>

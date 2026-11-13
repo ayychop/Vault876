@@ -326,9 +326,59 @@
     to { background-position: -60% 0; }
   }
 
+  /* VAULT 876 navbar lockup — a slow, shared gold bloom that makes the crest
+     coin and the wordmark breathe as one living mark. The gold ring is folded
+     into the coin's box-shadow because Tailwind's `ring` is also a box-shadow,
+     so the two can't live as separate declarations. Peak intensity is driven by
+     theme-aware vars: a confident bloom on obsidian, a whisper on white so gold
+     never muddies against the light ground. */
+  .wordmark-coin {
+    --coin-ring: 0.55;
+    --glow-min: 0.14;
+    --glow-max: 0.42;
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, var(--coin-ring)),
+      0 0 16px rgba(212, 175, 55, var(--glow-max));
+    animation: wordmark-coin-glow 4s ease-in-out infinite;
+    will-change: box-shadow;
+  }
+  .wordmark-type {
+    --glow-min: 0.14;
+    --glow-max: 0.4;
+    filter: drop-shadow(0 0 9px rgba(212, 175, 55, var(--glow-max)));
+    animation: wordmark-type-glow 4s ease-in-out infinite;
+    will-change: filter;
+  }
+  @keyframes wordmark-coin-glow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, var(--coin-ring)),
+        0 0 10px rgba(212, 175, 55, var(--glow-min));
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(212, 175, 55, calc(var(--coin-ring) + 0.2)),
+        0 0 20px rgba(212, 175, 55, var(--glow-max));
+    }
+  }
+  @keyframes wordmark-type-glow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, var(--glow-min))); }
+    50% { filter: drop-shadow(0 0 13px rgba(212, 175, 55, var(--glow-max))); }
+  }
+  /* Hover lifts the whole lockup a touch brighter. */
+  .group:hover .wordmark-coin { --glow-max: 0.6; --coin-ring: 0.8; }
+  .group:hover .wordmark-type { --glow-max: 0.58; }
+  /* Light mode: gold-on-white turns muddy fast, so the bloom is barely there. */
+  :root:not(.dark) .wordmark-coin { --glow-min: 0.05; --glow-max: 0.15; }
+  :root:not(.dark) .wordmark-type { --glow-min: 0; --glow-max: 0.07; }
+  :root:not(.dark) .group:hover .wordmark-coin { --glow-max: 0.26; }
+  :root:not(.dark) .group:hover .wordmark-type { --glow-max: 0.16; }
+
   @media (prefers-reduced-motion: reduce) {
     .aura span,
-    .placeholder-sheen { animation: none; }
+    .placeholder-sheen,
+    .wordmark-coin,
+    .wordmark-type { animation: none; }
     .group:hover .service-gleam { animation: none; opacity: 0; }
   }
 }
