@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Check, ChevronLeft, Camera } from 'lucide-react'
 import { services, gbp } from '../lib/services.js'
 import { site } from '../lib/site.js'
+import { supabase } from '../lib/supabase.js'
 import Wordmark from '../components/Wordmark.jsx'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -46,6 +47,8 @@ export default function Booking() {
   const [styleBySlug, setStyleBySlug] = useState({})
   const [details, setDetails] = useState({ name: '', phone: '', email: '', photo: '' })
   const [done, setDone] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const days = useMemo(() => upcomingDays(), [])
   const total = useMemo(
@@ -76,10 +79,53 @@ export default function Booking() {
     (step === 2 && date && time) ||
     (step === 3 && details.name.trim() && details.phone.trim())
 
+  // Insert one row per chosen service (matching the per-service line items the
+  // owner portal + tax export expect), then show the confirmation.
+  const submit = async () => {
+    if (!canContinue || submitting) return
+    setError('')
+
+    // Demo fallback: if the backend isn't configured, confirm without saving.
+    if (!supabase) {
+      setDone(true)
+      return
+    }
+
+    const appointmentDate = date ? date.toLocaleDateString('en-CA') : null // YYYY-MM-DD
+    const rows = picked.map((slug) => {
+      const s = services.find((x) => x.slug === slug)
+      return {
+        client_name: details.name.trim(),
+        client_phone: details.phone.trim(),
+        client_email: details.email.trim() || null,
+        service: s?.name || slug,
+        service_slug: slug,
+        style: styleBySlug[slug] || null,
+        price: s?.price || 0,
+        appointment_date: appointmentDate,
+        appointment_time: time,
+        status: 'Pending',
+        photo_name: details.photo || null,
+      }
+    })
+
+    setSubmitting(true)
+    const { error: insertError } = await supabase.from('bookings').insert(rows)
+    setSubmitting(false)
+
+    if (insertError) {
+      setError(
+        'We couldn’t save your booking just now. Please try again, or call the salon and we’ll sort it.',
+      )
+      return
+    }
+    setDone(true)
+  }
+
   const next = () => {
     if (!canContinue) return
     if (step < 3) setStep(step + 1)
-    else setDone(true)
+    else submit()
   }
 
   const fmtDay = (d) =>
@@ -353,6 +399,13 @@ export default function Booking() {
       {/* Sticky price bar */}
       {!done && (
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink/10 bg-canvas/85 backdrop-blur-xl">
+          {error && (
+            <div className="mx-auto max-w-4xl px-5 pt-3 sm:px-8">
+              <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-600 dark:text-red-400">
+                {error}
+              </p>
+            </div>
+          )}
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
             <div>
               <div className="text-xs uppercase tracking-wide text-ink/55">
@@ -363,10 +416,10 @@ export default function Booking() {
             <button
               type="button"
               onClick={next}
-              disabled={!canContinue}
+              disabled={!canContinue || submitting}
               className="btn-gold !px-10 !py-4"
             >
-              {step < 3 ? 'Continue' : 'Confirm booking'}
+              {step < 3 ? 'Continue' : submitting ? 'Saving…' : 'Confirm booking'}
             </button>
           </div>
         </div>
@@ -403,8 +456,9 @@ function Confirmation({ picked, date, time, fmtDay, styleBySlug = {} }) {
       </div>
       <h1 className="display-md mt-8 font-display font-semibold text-ink">Request received</h1>
       <p className="mt-4 text-ink/60">
-        Thank you — we'll call to confirm your {date && time ? `appointment for ${fmtDay(date)} at ${time}` : 'appointment'}.
-        This is a demo booking, so nothing has been charged.
+        Thank you — your request is in, and we'll call to confirm your{' '}
+        {date && time ? `appointment for ${fmtDay(date)} at ${time}` : 'appointment'}.
+        Nothing has been charged — payment is taken in the salon.
       </p>
       <div className="mt-8 rounded-2xl border border-ink/12 bg-surface p-6 text-left">
         <div className="label-caps text-ink/40">Your selection</div>

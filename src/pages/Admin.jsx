@@ -1,10 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, Download, Printer, ArrowLeft } from 'lucide-react'
+import { Search, Download, Printer, ArrowLeft, RefreshCw, LogOut } from 'lucide-react'
 import Wordmark from '../components/Wordmark.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
-import { bookings } from '../lib/adminData.js'
+import AdminLogin from '../components/AdminLogin.jsx'
+import { bookings as demoBookings } from '../lib/adminData.js'
+import { supabase } from '../lib/supabase.js'
+
+// Map a live Supabase bookings row into the shape the dashboard renders.
+const mapRow = (r) => ({
+  id: r.ref || r.id,
+  date: r.appointment_date || (r.created_at ? String(r.created_at).slice(0, 10) : ''),
+  client: r.client_name || '—',
+  service: r.service || '—',
+  style: r.style || null,
+  price: Number(r.price) || 0,
+  status: r.status || 'Pending',
+})
 
 const EASE = [0.16, 1, 0.3, 1]
 const gbp = (n) => `£${n.toLocaleString('en-GB')}`
@@ -29,10 +42,86 @@ const csv = (v) => {
 
 export default function Admin() {
   const [query, setQuery] = useState('')
+  const [bookings, setBookings] = useState([])
+  const [services, setServices] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+  const [session, setSession] = useState(null)
+  const [authReady, setAuthReady] = useState(false)
+
+  const load = async () => {
+    setLoading(true)
+    setLoadError('')
+
+    // Dev fallback: no backend configured → show the demo rows so the page works.
+    if (!supabase) {
+      setBookings(demoBookings)
+      setServices([])
+      setLoading(false)
+      return
+    }
+
+    const [bk, sv] = await Promise.all([
+      supabase
+        .from('bookings')
+        .select('*')
+        .order('appointment_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false }),
+      supabase.from('services').select('*').order('sort_order', { ascending: true }),
+    ])
+
+    if (bk.error) {
+      setLoadError(bk.error.message)
+      setBookings([])
+    } else {
+      setBookings((bk.data || []).map(mapRow))
+    }
+    setServices(sv.data || [])
+    setLoading(false)
+  }
+
+  // Track the Supabase auth session — the owner portal requires sign-in.
+  useEffect(() => {
+    if (!supabase) {
+      setAuthReady(true)
+      return
+    }
+    let active = true
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return
+      setSession(data.session)
+      setAuthReady(true)
+    })
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s)
+    })
+    return () => {
+      active = false
+      sub.subscription.unsubscribe()
+    }
+  }, [])
+
+  // Load data for the right viewer: demo rows without a backend, live rows for a
+  // signed-in admin, nothing when signed out.
+  useEffect(() => {
+    if (!supabase) {
+      load()
+      return
+    }
+    if (session) load()
+    else {
+      setBookings([])
+      setServices([])
+      setLoading(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session])
+
+  const signOut = () => supabase?.auth.signOut()
 
   const sorted = useMemo(
     () => [...bookings].sort((a, b) => (a.date < b.date ? 1 : -1)),
-    [],
+    [bookings],
   )
 
   const filtered = useMemo(() => {
@@ -62,9 +151,9 @@ export default function Admin() {
       total: bookings.length,
       revenue: totalRevenue,
       upcoming,
-      avg,
+      avg: Number.isFinite(avg) ? avg : 0,
     }
-  }, [])
+  }, [bookings])
 
   const exportCSV = () => {
     const header = ['Booking ID', 'Date', 'Client', 'Service', 'Price (GBP)', 'Status']
@@ -136,6 +225,18 @@ export default function Admin() {
     { label: 'Avg. Ticket', value: gbp(kpis.avg), sub: 'per booking' },
   ]
 
+  // Brief hold while we resolve the auth session, then gate on sign-in.
+  if (!authReady) {
+    return (
+      <div className="flex min-h-[100svh] items-center justify-center bg-canvas text-ink/40">
+        <RefreshCw className="h-5 w-5 animate-spin" />
+      </div>
+    )
+  }
+  if (supabase && !session) {
+    return <AdminLogin />
+  }
+
   return (
     <div className="min-h-screen bg-canvas text-ink">
       {/* Top bar */}
@@ -155,6 +256,16 @@ export default function Admin() {
             >
               <ArrowLeft className="h-4 w-4" /> View site
             </Link>
+            {supabase && session && (
+              <button
+                type="button"
+                onClick={signOut}
+                className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 px-3.5 py-2 text-sm font-medium text-ink/70 transition-colors hover:border-gold/60 hover:text-gold"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign out</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -178,7 +289,17 @@ export default function Admin() {
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
+              onClick={load}
+              disabled={loading}
+              className="btn-ghost !px-4 !py-3 !text-sm"
+              aria-label="Refresh bookings"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
+            </button>
+            <button
+              type="button"
               onClick={exportCSV}
+              disabled={sorted.length === 0}
               className="btn-gold !px-5 !py-3 !text-sm"
             >
               <Download className="h-4 w-4" /> Export for Tax (CSV)
@@ -186,6 +307,7 @@ export default function Admin() {
             <button
               type="button"
               onClick={exportPDF}
+              disabled={sorted.length === 0}
               className="btn-ghost !px-5 !py-3 !text-sm"
             >
               <Printer className="h-4 w-4" /> Save as PDF
@@ -269,10 +391,38 @@ export default function Admin() {
                     </td>
                   </tr>
                 ))}
-                {filtered.length === 0 && (
+                {loading && (
                   <tr>
                     <td colSpan={5} className="px-5 py-14 text-center text-ink/45">
-                      No bookings match “{query}”.
+                      <span className="inline-flex items-center gap-2">
+                        <RefreshCw className="h-4 w-4 animate-spin" /> Loading bookings…
+                      </span>
+                    </td>
+                  </tr>
+                )}
+                {!loading && loadError && (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-14 text-center">
+                      <p className="font-medium text-red-600 dark:text-red-400">
+                        Couldn’t load bookings.
+                      </p>
+                      <p className="mx-auto mt-2 max-w-md text-sm text-ink/55">
+                        {loadError} — if this is the first run, apply{' '}
+                        <code className="rounded bg-ink/10 px-1.5 py-0.5 text-xs">
+                          supabase/schema.sql
+                        </code>{' '}
+                        in the Supabase SQL Editor to create the tables and access
+                        policies.
+                      </p>
+                    </td>
+                  </tr>
+                )}
+                {!loading && !loadError && filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="px-5 py-14 text-center text-ink/45">
+                      {bookings.length === 0
+                        ? 'No bookings yet — once a client books, they’ll appear here.'
+                        : `No bookings match “${query}”.`}
                     </td>
                   </tr>
                 )}
@@ -282,9 +432,38 @@ export default function Admin() {
         </div>
 
         <p className="mt-4 text-xs text-ink/40">
-          Showing {filtered.length} of {bookings.length} bookings · demo data —
-          live records connect via Supabase next.
+          Showing {filtered.length} of {bookings.length} bookings
+          {supabase ? ' · live from Supabase' : ' · demo data (backend not configured)'}.
         </p>
+
+        {/* Live service menu — read from the Supabase `services` table */}
+        {services.length > 0 && (
+          <section className="mt-14">
+            <h2 className="font-display text-2xl font-bold">Service menu</h2>
+            <p className="mt-1 text-sm text-ink/45">Live from your Supabase menu.</p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((s) => (
+                <div
+                  key={s.slug}
+                  className="rounded-2xl border border-ink/10 bg-surface p-5"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-display text-lg text-ink">{s.name}</div>
+                      <div className="mt-0.5 text-xs text-ink/45">{s.duration}</div>
+                    </div>
+                    <div className="font-display text-lg text-gold">{gbp(Number(s.price) || 0)}</div>
+                  </div>
+                  {Array.isArray(s.styles) && s.styles.length > 0 && (
+                    <div className="mt-3 text-xs text-ink/50">
+                      {s.styles.length} style{s.styles.length > 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )

@@ -9,6 +9,11 @@ dist-ssr
 *.log
 npm-debug.log*
 
+# Local env / secrets (Supabase keys live here — never commit)
+.env
+.env.*
+!.env.example
+
 # Editor / OS
 .DS_Store
 *.local
