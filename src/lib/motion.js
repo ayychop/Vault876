@@ -1,15 +1,19 @@
 // House motion grammar: a single authored gesture — content rises a short
-// distance into place on an exponential ease-out from an already-legible
-// default. Reused everywhere so the whole site breathes with one rhythm.
+// distance into place and settles with a soft spring, so the whole site shares
+// one confident, rhythmic cadence. Movement springs; opacity fades smoothly.
 
 const EASE = [0.16, 1, 0.3, 1]
 
+// The house spring — slow, smooth, with a gentle settle (a touch of swagger,
+// never a cartoon bounce). Reused by fadeUp and the section Reveal.
+export const spring = { type: 'spring', stiffness: 52, damping: 15, mass: 1.05 }
+
 export const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 32 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, ease: EASE },
+    transition: { y: spring, opacity: { duration: 0.7, ease: EASE } },
   },
 }
 

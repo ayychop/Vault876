@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T00:00:00Z",
+  "title": "Design System: VAULT 876",
+  "extensions": {
+    "colorMeta": {
+      "obsidian": { "role": "neutral", "displayName": "Matte Obsidian", "canonical": "#0A0A0A", "tonalRamp": ["#000000", "#0A0A0A", "#121212", "#1F1F1F", "#2E2E2E", "#595959", "#8A8A8A", "#C7C7C7"] },
+      "obsidian-raised": { "role": "neutral", "displayName": "Raised Obsidian", "canonical": "#121212", "tonalRamp": ["#000000", "#0A0A0A", "#121212", "#1F1F1F", "#2E2E2E", "#595959", "#8A8A8A", "#C7C7C7"] },
+      "obsidian-line": { "role": "neutral", "displayName": "Obsidian Line", "canonical": "#1F1F1F", "tonalRamp": ["#0A0A0A", "#141414", "#1F1F1F", "#2E2E2E", "#454545", "#6B6B6B", "#9C9C9C", "#D4D4D4"] },
+      "white": { "role": "neutral", "displayName": "Crisp White", "canonical": "#FFFFFF", "tonalRamp": ["#1A1A1A", "#3D3D3D", "#5E5E5E", "#808080", "#A3A3A3", "#C7C7C7", "#E6E6E6", "#FFFFFF"] },
+      "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#F5F4F1", "tonalRamp": ["#2B2A27", "#4A4945", "#6B6A66", "#908F8A", "#B5B4AF", "#D6D5D0", "#ECEBE7", "#F5F4F1"] },
+      "gold": { "role": "primary", "displayName": "Metallic Gold", "canonical": "#D4AF37", "tonalRamp": ["#2E2608", "#4A3D11", "#6B5718", "#8E7420", "#A8862A", "#D4AF37", "#E7CC6E", "#F3E6B8"] },
+      "gold-soft": { "role": "primary", "displayName": "Lit Gold", "canonical": "#E7CC6E", "tonalRamp": ["#3A3214", "#574C1F", "#7A6B2C", "#A08D3C", "#C6AE52", "#E7CC6E", "#F0DC97", "#F8EEC8"] },
+      "gold-deep": { "role": "primary", "displayName": "Shadow Gold", "canonical": "#A8862A", "tonalRamp": ["#241D09", "#3C300F", "#564517", "#75601F", "#8E7324", "#A8862A", "#C6A852", "#E4CF93"] },
+      "amber-limited": { "role": "tertiary", "displayName": "Limited Amber", "canonical": "#FBBF24", "tonalRamp": ["#3A2A05", "#5C420A", "#875F10", "#B07D18", "#D89C1F", "#FBBF24", "#FCD15F", "#FDE6A3"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Playfair Display 900 at clamp(2.9rem,9.5vw,7.5rem), line-height 0.9, tracking -0.055em. Hero and page-opening headlines; one word often italic-medium, terminal period in gold." },
+      "headline": { "displayName": "Headline", "purpose": "Playfair Display 600 at clamp(1.85rem,4.2vw,3rem). Section and booking-step titles." },
+      "accent": { "displayName": "Accent / Service Name", "purpose": "Montserrat ExtraBold uppercase at clamp(1.4rem,3.8vw,2.4rem). Service names only, in the client's exact words; warms to gold on hover." },
+      "body": { "displayName": "Body", "purpose": "Inter 400, line-height ~1.6; secondary copy at ink/50-60, max measure ~68ch." },
+      "label": { "displayName": "Label", "purpose": "Inter 500, 0.72rem, tracking 0.22em, uppercase. Overlines, field labels, image captions, status overlines (hero subhead rides wider at 0.42em)." }
+    },
+    "shadows": [
+      { "name": "gold-metal-lift", "value": "0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 30px -12px rgba(212,175,55,0.5)", "purpose": "Resting shadow of the primary gold button — inset top highlight + soft gold cast so it reads as lit metal." },
+      { "name": "gold-metal-lift-hover", "value": "0 1px 0 rgba(255,255,255,0.5) inset, 0 24px 55px -12px rgba(212,175,55,0.78)", "purpose": "Primary button hover — deepened gold bloom with the lift." },
+      { "name": "gold-hover-bloom-row", "value": "0 26px 70px -30px rgba(212,175,55,0.6)", "purpose": "Large soft gold glow under a service row on hover." },
+      { "name": "gold-hover-bloom-ghost", "value": "0 18px 50px -18px rgba(212,175,55,0.55)", "purpose": "Soft gold glow under ghost/Call buttons on hover." },
+      { "name": "section-lift", "value": "0 24px 60px -24px rgba(0,0,0,0.85)", "purpose": "The one neutral structural shadow (Tailwind token shadow-lift), for deeply lifted panels." },
+      { "name": "thread-node-glow", "value": "0 0 10px 2px rgba(212,175,55,0.7)", "purpose": "Gold halo on the scroll-progress node." },
+      { "name": "medallion-lift", "value": "0 0 0 1px rgba(212,175,55,0.25), 0 8px 24px -8px rgba(0,0,0,0.7)", "purpose": "Faint gold rim + lift on the crest medallion." }
+    ],
+    "motion": [
+      { "name": "house-spring", "value": "spring(stiffness: 52, damping: 15, mass: 1.05)", "purpose": "The single house spring — slow, smooth, a gentle settle. Drives fadeUp lifts and the section Reveal; never a cartoon bounce." },
+      { "name": "ease-luxe", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Exponential ease-out — the house curve for fades, clip reveals, color/theme transitions, and all hover timing." },
+      { "name": "theme-flip", "value": "cubic-bezier(0.16, 1, 0.3, 1) 350ms", "purpose": "Low-specificity transition of background/border/color/fill/stroke when the theme toggles." },
+      { "name": "service-sweep", "value": "service-sweep 0.85s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "One-pass diagonal gold gleam across a service row on hover." },
+      { "name": "lenis-scroll", "value": "Lenis smoothWheel, duration 1.15 (anchors 1.2)", "purpose": "Inertial smooth scrolling; disabled under prefers-reduced-motion." }
+    ],
+    "atmosphere": [
+      { "name": "aura", "value": "two screen-blended radial-gold blobs (rgba(212,175,55,0.14/0.10)), blur 60px, opacity 0.55, drifting 26s/34s", "purpose": "The single sanctioned ambient gold field — depth in the obsidian ground, not decoration." },
+      { "name": "grain", "value": "fixed fractalNoise SVG veil, opacity 0.075, mix-blend overlay, 0.7s stepped shift", "purpose": "Filmic grain so obsidian never reads as a flat digital void." },
+      { "name": "placeholder-sheen", "value": "115deg gold/white linear sweep, background-size 250%, 5s ease-in-out loop", "purpose": "Slow diagonal sheen across branded image placeholders." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ],
+    "containers": [
+      { "name": "nav", "value": "max-w-7xl (80rem)" },
+      { "name": "hero", "value": "max-w-6xl (72rem), section 100svh" },
+      { "name": "services", "value": "max-w-5xl (64rem)" },
+      { "name": "booking", "value": "max-w-4xl (56rem)" },
+      { "name": "measure", "value": "68ch" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The gold metal CTA — used for Book Now and booking Continue/Confirm.",
+      "html": "<button class=\"ds-btn-gold\">Book Now</button>",
+      "css": ".ds-btn-gold { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; border-radius: 9999px; padding: 14px 28px; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.015em; color: #0A0A0A; background: linear-gradient(180deg, #E7CC6E 0%, #D4AF37 55%, #BF9C2E 100%); box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 30px -12px rgba(212,175,55,0.5); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); cursor: pointer; } .ds-btn-gold:hover { transform: translateY(-2px) scale(1.035); box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 24px 55px -12px rgba(212,175,55,0.78); } .ds-btn-gold:active { transform: translateY(0) scale(0.99); } .ds-btn-gold:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); box-shadow: none; transform: none; cursor: not-allowed; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action — hairline outline warming to gold. Call Salon, Back to site.",
+      "html": "<button class=\"ds-btn-ghost\">Call Salon</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 9999px; padding: 14px 28px; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.015em; color: rgba(255,255,255,0.9); background: transparent; border: 1px solid rgba(255,255,255,0.22); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); cursor: pointer; } .ds-btn-ghost:hover { border-color: rgba(212,175,55,0.7); color: #FFFFFF; background: rgba(212,175,55,0.06); }"
+    },
+    {
+      "name": "Style Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Optional per-service style selector in the booking flow; selected fills solid gold.",
+      "html": "<button class=\"ds-chip\">Knotless braids</button><button class=\"ds-chip ds-chip--on\">Box braids</button>",
+      "css": ".ds-chip { border-radius: 9999px; padding: 6px 12px; font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.65); background: transparent; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s cubic-bezier(0.16,1,0.3,1); cursor: pointer; } .ds-chip:hover { border-color: rgba(212,175,55,0.6); color: #FFFFFF; } .ds-chip--on { background: #D4AF37; color: #0A0A0A; border-color: #D4AF37; }"
+    },
+    {
+      "name": "Service Card",
+      "kind": "card",
+      "refersTo": "card-service",
+      "description": "Selectable service card in booking step 1; border warms to gold, fills faint gold when picked.",
+      "html": "<div class=\"ds-card\"><span class=\"ds-card__name\">Braid extensions</span><span class=\"ds-card__price\">£90</span></div>",
+      "css": ".ds-card { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; border-radius: 16px; padding: 20px; background: #121212; border: 1px solid rgba(255,255,255,0.12); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-card:hover { border-color: rgba(212,175,55,0.5); } .ds-card--on { border-color: #D4AF37; background: rgba(212,175,55,0.06); } .ds-card__name { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; color: #FFFFFF; } .ds-card__price { font-family: 'Playfair Display', Georgia, serif; font-size: 1.125rem; color: #D4AF37; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Booking detail field — surface fill, hairline border shifting to gold on focus, gold caret.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">Full name *</span><input class=\"ds-input\" placeholder=\"Jane Doe\" /></label>",
+      "css": ".ds-field__label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.7); } .ds-input { width: 100%; border-radius: 12px; padding: 14px 16px; background: #121212; color: #FFFFFF; border: 1px solid rgba(255,255,255,0.15); caret-color: #D4AF37; transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-input::placeholder { color: rgba(255,255,255,0.5); } .ds-input:focus { border-color: rgba(212,175,55,0.7); outline: none; } .ds-input:focus-visible { outline: 2px solid #D4AF37; outline-offset: 3px; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Desktop nav link — gold underline wipes in left-to-right on hover.",
+      "html": "<a class=\"ds-navlink\" href=\"#services\">Services</a>",
+      "css": ".ds-navlink { position: relative; font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-navlink:hover { color: #FFFFFF; } .ds-navlink::after { content: ''; position: absolute; left: 0; bottom: -0.375rem; height: 1px; width: 0; background: #D4AF37; transition: width 0.3s cubic-bezier(0.16,1,0.3,1); } .ds-navlink:hover::after { width: 100%; }"
+    },
+    {
+      "name": "Service Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature editorial menu row — poster-caps name + gold price over a hairline divider, with a gold gleam sweep on hover.",
+      "html": "<a class=\"ds-row\" href=\"/booking\"><div class=\"ds-row__main\"><h3 class=\"ds-row__name\">BRAID EXTENSIONS</h3><p class=\"ds-row__copy\">Neat, long-lasting braid extensions.</p></div><span class=\"ds-row__price\">from £90</span><svg class=\"ds-row__arrow\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 17L17 7\"/><path d=\"M8 7h9v9\"/></svg><span class=\"ds-row__gleam\"></span></a>",
+      "css": ".ds-row { position: relative; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; border-radius: 16px; border-bottom: 1px solid rgba(255,255,255,0.12); padding: 2rem 1rem; text-decoration: none; transition: all 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-row:hover { transform: scale(1.012); background: rgba(212,175,55,0.04); box-shadow: 0 26px 70px -30px rgba(212,175,55,0.6); } .ds-row__main { min-width: 0; flex: 1; } .ds-row__name { font-family: Montserrat, Inter, sans-serif; font-weight: 800; text-transform: uppercase; line-height: 0.95; letter-spacing: -0.01em; font-size: clamp(1.4rem,3.8vw,2.4rem); color: #FFFFFF; transition: color 0.3s; } .ds-row:hover .ds-row__name { color: #D4AF37; } .ds-row__copy { margin-top: 0.625rem; font-size: 0.95rem; color: rgba(255,255,255,0.55); } .ds-row__price { flex-shrink: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; color: #D4AF37; } .ds-row__arrow { height: 1.5rem; width: 1.5rem; flex-shrink: 0; color: rgba(255,255,255,0.25); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); } .ds-row:hover .ds-row__arrow { transform: translate(0.25rem,-0.25rem); color: #D4AF37; } .ds-row__gleam { position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen; background: linear-gradient(115deg, transparent 40%, rgba(212,175,55,0.12) 47%, rgba(255,255,255,0.16) 50%, rgba(212,175,55,0.12) 53%, transparent 60%); background-size: 250% 100%; background-position: 150% 0; } .ds-row:hover .ds-row__gleam { opacity: 1; animation: ds-sweep 0.85s cubic-bezier(0.16,1,0.3,1); } @keyframes ds-sweep { from { background-position: 150% 0; } to { background-position: -60% 0; } }"
+    },
+    {
+      "name": "Branded Image Placeholder",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature photography stand-in — obsidian panel with gold medallion, hairline weave, sheen sweep and inset frame.",
+      "html": "<div class=\"ds-placeholder\" role=\"img\" aria-label=\"Photography coming soon\"><div class=\"ds-placeholder__bloom\"></div><div class=\"ds-placeholder__weave\"></div><div class=\"ds-placeholder__mark\"><svg width=\"120\" height=\"120\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"none\" stroke=\"#D4AF37\" stroke-width=\"1\"/></svg></div><div class=\"ds-placeholder__frame\"></div></div>",
+      "css": ".ds-placeholder { position: relative; overflow: hidden; background: #0A0A0A; min-height: 240px; border-radius: 16px; } .ds-placeholder__bloom { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(212,175,55,0.07), transparent 68%); } .ds-placeholder__weave { position: absolute; inset: 0; opacity: 0.5; background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.016) 0, rgba(255,255,255,0.016) 1px, transparent 1px, transparent 9px); } .ds-placeholder__mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; } .ds-placeholder__frame { position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Obsidian Vault",
+    "overview": "VAULT 876 is a hair and beauty salon rendered as a luxury fashion house. The system treats a near-empty matte-obsidian ground as the primary material and negative space as the real luxury — the way a Vogue cover or a Celine campaign lets one confident gesture carry the page. Onto that quiet dark it lays crisp white type, a single precious metal (gold), and a warm high-contrast serif, then warms the restraint with cultural swagger: poster-weight uppercase service names, a slow gold gleam, a drifting ambient aura. The register is 'Apple makes a Black urban hair and beauty salon' — editorial elegance plus Apple-grade smoothness plus unapologetic confidence. The surface is deliberately atmospheric rather than flat-digital: a fixed filmic grain veil, a faint screen-blended gold aura that drifts behind everything, and branded medallion panels that stand in for photography. Density is low and rhythmic — large type, generous gutters, hairline gold/white dividers doing the structural work instead of boxes and fills. Motion is the connective tissue: one house spring and one exponential ease-out curve carry every reveal. The one thing the world refuses is the category default: the cluttered promo flyer, the service laundry-list, same-size icon cards, and above all the incumbent's hot-pink accent. Pink is banned outright. Gold is rationed. The brand must read premium before it reads 'salon'.",
+    "keyCharacteristics": [
+      "Matte-obsidian ground (#0A0A0A) held nearly empty; negative space is the primary material.",
+      "A single precious metal — gold (#D4AF37) — on actions, hairlines, and active states only.",
+      "Editorial type contrast: Playfair Display serif + Montserrat ExtraBold poster caps + Inter UI.",
+      "One house motion identity (a spring + an ease-out curve) across every surface.",
+      "Branded medallion placeholders instead of stock photography; no human faces.",
+      "Dark by default, with an optional light theme; gold holds unchanged in both."
+    ],
+    "rules": [
+      { "name": "The One Metal Rule", "body": "Gold stays precise on UI — primary actions, hairline accents, active states — and is never poured as a glow or gradient wash across chrome or content. The single sanctioned exception is one faint, slow-drifting, screen-blended ambient aura in the obsidian ground. The primary action button is the second deliberate exception: it is rendered as actual metal, because gold is the brand's material.", "section": "colors" },
+      { "name": "The No-Pink Rule", "body": "No pink, ever, in any tint or state. The incumbent's hot-pink accent is the specific thing this identity removes; a pink value anywhere is a brand defect, not a variation.", "section": "colors" },
+      { "name": "The Semantic-Invert Rule", "body": "canvas, ink, and surface are theme-aware tokens (CSS vars) that invert between the default dark theme and the optional light theme. Gold and its two edges do not invert.", "section": "colors" },
+      { "name": "The Client's-Words Rule", "body": "Service names render in the salon's exact flyer terminology. Never creatively rewrite a service name, even for consistency.", "section": "typography" },
+      { "name": "The Overline-Not-Kicker Rule", "body": "Wide-tracked uppercase caps are a label/caption voice — field labels, image overlines, status overlines — not a decorative eyebrow stacked above a headline.", "section": "typography" },
+      { "name": "The Glow-Not-Drop Rule", "body": "Elevation on interactive elements is expressed as a soft gold bloom that responds to hover/active, not as a neutral grey drop shadow and never as a hard offset shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep gold rationed — primary actions, hairline accents, active/selected states, and the one sanctioned ambient aura. Render the primary button as actual metal (the gold gradient + lift).",
+      "Do hold the obsidian ground nearly empty; let negative space and hairline dividers carry structure instead of boxes and fills.",
+      "Do carry the house motion identity everywhere: the spring (stiffness 52, damping 15, mass 1.05) for lifts and the ease-out curve cubic-bezier(0.16,1,0.3,1) for fades/clip/color — slow, smooth, never a cartoon bounce. Honor prefers-reduced-motion.",
+      "Do set service names in Montserrat ExtraBold uppercase using the client's exact words, with Playfair for display and Inter for UI.",
+      "Do use the branded medallion placeholder for any empty image slot; keep imagery face-free until the salon's own shoot lands.",
+      "Do express interactive depth as a soft gold bloom responding to hover/active."
+    ],
+    "donts": [
+      "Don't use pink in any tint, state, or gradient — anywhere.",
+      "Don't pour gold as a glow or gradient wash across chrome or content; only the ambient aura and the metal button are sanctioned gold fields.",
+      "Don't use neutral grey drop shadows or hard offset shadows for structure; surfaces are flat at rest and lit gold on interaction.",
+      "Don't render the menu as a grid of same-size icon cards or a plain laundry-list — it is an editorial hairline row-list.",
+      "Don't stack an invented uppercase kicker/eyebrow above a headline; the tracked caps are a label/caption voice only.",
+      "Don't ship a dead primary button; disabled state must read plainly inert, and every CTA must be live (book or call)."
+    ]
+  }
+}

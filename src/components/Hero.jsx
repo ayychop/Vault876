@@ -1,93 +1,136 @@
-import { motion } from 'framer-motion'
-import { fadeUp, imageReveal, stagger } from '../lib/motion.js'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { site } from '../lib/site.js'
-import { IconPhone, IconPin } from './icons.jsx'
+import { IconPhone } from './icons.jsx'
+import ImagePlaceholder from './ImagePlaceholder.jsx'
+
+const EASE = [0.16, 1, 0.3, 1]
+
+// Word-by-word blur-in for the headline — the editorial reveal.
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
+}
+const word = {
+  hidden: { opacity: 0, y: 30, filter: 'blur(18px)' },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 1.1, ease: EASE },
+  },
+}
+const rise = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
+}
 
 export default function Hero() {
+  const ref = useRef(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  })
+  // Cinematic drift: the image sinks and the content lifts as you scroll away.
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.14])
+  const copyY = useTransform(scrollYProgress, [0, 1], ['0%', '-28%'])
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-canvas">
-      {/* Editorial portrait — bleeds off the right edge, anchored to the model */}
+    <section
+      ref={ref}
+      className="relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-obsidian"
+    >
+      {/* Full-bleed branded placeholder — a living obsidian field with the
+          medallion as a faint watermark and a slow sheen, standing in until the
+          salon's own hero photography lands. */}
       <motion.div
-        variants={imageReveal}
-        initial="hidden"
-        animate="show"
-        className="absolute inset-y-0 right-0 w-full lg:w-[58%]"
+        initial={{ scale: 1.12, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1.8, ease: EASE }}
+        style={reduce ? undefined : { y: imgY, scale: imgScale }}
+        className="absolute inset-0"
       >
-        <img
-          src="/images/hero-braids-lashes.jpg"
-          alt="VAULT 876 client wearing long braided extensions and bold lashes"
-          className="h-full w-full object-cover object-[90%_18%]"
-        />
-        {/* Scrims: darken for mood + hold text legible over the ground */}
-        <div className="absolute inset-0 bg-obsidian/48" />
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent lg:hidden" />
-        {/* Sink the lower-background clutter (both themes) */}
-        <div className="absolute inset-0 hidden lg:block bg-gradient-to-t from-obsidian/90 via-obsidian/30 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/85 to-obsidian/15 lg:from-canvas lg:via-canvas/78 lg:to-transparent lg:to-[72%]" />
-        {/* Soft vignette settles the edges into the page */}
-        <div className="absolute inset-0 hidden lg:block [box-shadow:inset_0_0_140px_40px_rgba(10,10,10,0.6)]" />
+        <ImagePlaceholder className="h-full w-full" watermark logoSize={360} />
       </motion.div>
 
+      {/* Moody cinematic grade — deep obsidian vignette for drama + legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/35 to-obsidian/55" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_32%,_rgba(10,10,10,0.62)_100%)]" />
+
       {/* Content */}
-      <div className="relative mx-auto flex min-h-[100svh] max-w-7xl items-center px-5 sm:px-8">
-        <motion.div
-          variants={stagger(0.14, 0.15)}
+      <motion.div
+        style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
+        className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-5 text-center sm:px-8"
+      >
+        <motion.h1
+          variants={container}
           initial="hidden"
           animate="show"
-          className="max-w-xl pt-24 pb-28"
+          className="font-display font-black leading-[0.86] tracking-[-0.055em] text-white"
+          style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
         >
-          <motion.h1
-            variants={fadeUp}
-            className="display-xl font-display font-semibold text-white lg:text-ink"
-          >
-            Look good<span className="text-gold">.</span>
-            <br />
-            Feel good<span className="text-gold">.</span>
-          </motion.h1>
+          <span className="block overflow-hidden pb-[0.06em]">
+            <motion.span variants={word} className="inline-block">
+              Flawless<span className="text-gold">.</span>
+            </motion.span>
+          </span>
+          <span className="block overflow-hidden pb-[0.06em]">
+            <motion.span variants={word} className="inline-block italic font-medium">
+              Every time<span className="not-italic font-black text-gold">.</span>
+            </motion.span>
+          </span>
+        </motion.h1>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-7 max-w-md text-lg font-light leading-relaxed text-white/70 lg:text-ink/70"
-          >
-            Hair &amp; beauty for all hair types — braids, locs, wigs, relaxers and
-            lashes, made with precision in {site.address.city}.
-          </motion.p>
+        <motion.p
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          transition={{ delay: 0.7 }}
+          className="mt-8 max-w-md font-sans text-[0.78rem] font-light uppercase tracking-[0.42em] text-white/70"
+        >
+          Luxury hair &amp; beauty — {site.address.city}
+        </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            className="mt-10 flex flex-col gap-3.5 sm:flex-row sm:items-center"
+        <motion.div
+          variants={rise}
+          initial="hidden"
+          animate="show"
+          transition={{ delay: 0.9 }}
+          className="mt-11 flex flex-col items-center gap-4 sm:flex-row"
+        >
+          {/* Book Now is persistently available in the mobile sticky bar, so the
+              hero's primary mobile action is Call Salon — no duplicate CTA. */}
+          <Link
+            to="/booking"
+            className="btn-gold !hidden !rounded-full !px-12 !py-5 !text-base sm:!inline-flex"
           >
-            <a href={site.phoneHref} className="btn-gold">
-              <IconPhone className="h-[1.1rem] w-[1.1rem]" />
-              Call Salon
-            </a>
-            <a href="#services" className="btn-ghost">
-              Explore Services
-            </a>
-          </motion.div>
-
-          <motion.a
-            variants={fadeUp}
-            href={site.directionsHref}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-10 inline-flex items-center gap-2 text-sm text-white/45 transition-colors duration-300 hover:text-gold lg:text-ink/45"
+            Book Now
+          </Link>
+          <a
+            href={site.phoneHref}
+            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-4 text-sm font-medium text-white/90 backdrop-blur-sm transition-all duration-500 ease-luxe hover:scale-[1.03] hover:border-gold/70 hover:text-white hover:shadow-[0_18px_50px_-18px_rgba(212,175,55,0.55)]"
           >
-            <IconPin className="h-4 w-4 text-gold/80" />
-            Bakers Mews, Buckingham Street, {site.address.city} {site.address.postcode}
-          </motion.a>
+            <IconPhone className="h-[1.05rem] w-[1.05rem]" />
+            Call Salon
+          </a>
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* Quiet scroll cue */}
+      {/* Scroll cue */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
+        transition={{ delay: 1.5, duration: 1 }}
+        className="pointer-events-none absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 sm:flex"
       >
-        <span className="label-caps text-[0.6rem] text-white/40">Scroll</span>
-        <span className="h-10 w-px bg-gradient-to-b from-gold/60 to-transparent" />
+        <span className="font-sans text-[0.6rem] uppercase tracking-[0.4em] text-white/50">
+          Scroll
+        </span>
+        <span className="h-10 w-px bg-gradient-to-b from-gold/70 to-transparent" />
       </motion.div>
     </section>
   )

@@ -1,111 +1,87 @@
-import { Scissors, Sparkles } from 'lucide-react'
-import { IconComb } from './icons.jsx'
-
-// VAULT 876 emblem — a flat, single-weight gold reinterpretation of the
-// original 3D crest: a fine ring, an elegant tool cluster, and a
-// high-contrast serif lockup. Fashion-house register (Chanel / YSL / Dior).
+// VAULT 876 crest — a flat, single-weight gold reinterpretation of the salon's
+// original badge: a fine gold ring holding four hand-drawn tools (comb, makeup
+// brush, scissors, clipper), with "VAULT 876" in Playfair straddling the base
+// of the circle. Fashion-house register (Chanel / YSL). No Lucide, no raster.
 //
 // Props:
-//   size   — diameter in px (default 200)
+//   size     — px, the crest's width
 //   className
-export default function Logo({ size = 200, className = '', withText = true }) {
-  const stroke = 1.4
+//   variant  — 'crest' (full stacked badge, default) or 'mark' (ring + tools
+//              only, square, for the navbar lockup)
+//   withText — crest only; drop the stacked wordmark if false
+export default function Logo({ size = 240, className = '', variant = 'crest', withText = true }) {
+  const sw = 1.5 // single stroke weight, in viewBox units
+  const mark = variant === 'mark'
+  const showText = !mark && withText
 
   return (
-    <div
-      className={`relative ${className}`}
-      style={{ width: size, height: size }}
+    <svg
+      viewBox={mark ? '28 4 184 184' : '0 0 240 236'}
+      width={size}
+      height={mark ? size : size * (236 / 240)}
+      className={`text-ink ${className}`}
       role="img"
       aria-label="VAULT 876 — Hair & Beauty"
+      fill="none"
     >
-      {/* Ring + couture tick marks */}
-      <svg
-        viewBox="0 0 200 200"
-        className="absolute inset-0 h-full w-full text-gold"
-        fill="none"
+      <g
+        stroke="#D4AF37"
+        strokeWidth={sw}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <circle
-          cx="100"
-          cy="100"
-          r="94"
-          stroke="currentColor"
-          strokeWidth={stroke}
-          opacity="0.85"
-        />
-        <circle
-          cx="100"
-          cy="100"
-          r="88"
-          stroke="currentColor"
-          strokeWidth="0.6"
-          opacity="0.4"
-        />
-        {/* Four cardinal ticks, like a hallmark */}
-        <g stroke="currentColor" strokeWidth={stroke} strokeLinecap="round">
-          <path d="M100 4v7" />
-          <path d="M100 189v7" />
-          <path d="M4 100h7" />
-          <path d="M189 100h7" />
+        {/* Ring + inner hairline + hallmark ticks */}
+        <circle cx="120" cy="96" r="80" opacity="0.9" />
+        <circle cx="120" cy="96" r="73" strokeWidth="0.6" opacity="0.4" />
+        <path d="M120 10v8M120 174v8M34 96h8M198 96h8" />
+
+        {/* --- Tool cluster, fanned like the original --- */}
+
+        {/* Comb (left) */}
+        <g transform="translate(70,92) rotate(-16)">
+          <path d="M0 -30V20" />
+          <path d="M0 -26h11M0 -20h11M0 -14h11M0 -8h11M0 -2h11" />
         </g>
-      </svg>
 
-      {/* Inner composition */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-gold">
-        {/* Tool cluster */}
-        <div className="flex items-center justify-center gap-3">
-          <IconComb
-            className="h-[8%] min-h-5 w-auto -rotate-[18deg] text-gold/90"
-            style={{ height: size * 0.11 }}
-            strokeWidth={stroke}
-          />
-          <Scissors
-            style={{ height: size * 0.16, width: size * 0.16 }}
-            strokeWidth={stroke}
-            className="text-gold"
-          />
-          <Sparkles
-            style={{ height: size * 0.1, width: size * 0.1 }}
-            strokeWidth={stroke}
-            className="text-gold-soft"
-          />
-        </div>
+        {/* Makeup brush (centre-left) */}
+        <g transform="translate(99,94) rotate(-6)">
+          <path d="M0 24V-6" />
+          <path d="M-4 -6h8" />
+          <path d="M-4 -6c-1 -8 1 -24 4 -24s5 16 4 24" />
+        </g>
 
-        {withText && (
-          <>
-            {/* Hairline divider */}
-            <div
-              className="my-[6%] h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent"
-              style={{ width: size * 0.42 }}
-            />
+        {/* Scissors (centre-right) */}
+        <g transform="translate(130,90) rotate(6)">
+          <circle cx="-6" cy="22" r="5" />
+          <circle cx="6" cy="22" r="5" />
+          <path d="M-6 17 L8 -26" />
+          <path d="M6 17 L-8 -26" />
+          <circle cx="0" cy="6" r="1.1" fill="#D4AF37" stroke="none" />
+        </g>
 
-            {/* Wordmark */}
-            <div className="flex items-baseline justify-center gap-[0.12em] leading-none">
-              <span
-                className="font-display font-semibold tracking-[0.04em] text-ink"
-                style={{ fontSize: size * 0.17 }}
-              >
-                VAULT
-              </span>
-              <span
-                className="font-display font-medium italic text-gold"
-                style={{ fontSize: size * 0.17 }}
-              >
-                876
-              </span>
-            </div>
+        {/* Clipper (right) */}
+        <g transform="translate(162,92) rotate(16)">
+          <path d="M-7 -8h14l-1.5 30h-11z" />
+          <path d="M-8 -8l1.5 -6h13l1.5 6" />
+          <path d="M-6 -14v-3M-2 -14v-3M2 -14v-3M6 -14v-3" />
+          <path d="M-6 2h12" />
+        </g>
+      </g>
 
-            <div
-              className="mt-[4%] font-sans font-medium uppercase text-ink/70"
-              style={{
-                fontSize: size * 0.052,
-                letterSpacing: size * 0.012,
-              }}
-            >
-              Hair &amp; Beauty
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+      {showText && (
+        <text
+          x="120"
+          y="214"
+          textAnchor="middle"
+          fontFamily="'Playfair Display', Georgia, serif"
+          fontSize="48"
+          fontWeight="700"
+          letterSpacing="1"
+        >
+          <tspan fill="currentColor">VAULT</tspan>
+          <tspan fill="#D4AF37"> 876</tspan>
+        </text>
+      )}
+    </svg>
   )
 }

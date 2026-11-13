@@ -13,6 +13,16 @@ export const site = {
   },
   directionsHref:
     'https://maps.google.com/?q=Unit+B,+Bakers+Mews,+Buckingham+Street,+Aylesbury+HP20+2GN',
+  // Embeddable Google Map for the salon address (no API key required).
+  mapEmbedSrc:
+    'https://www.google.com/maps?q=Unit+B,+Bakers+Mews,+Buckingham+Street,+Aylesbury+HP20+2GN&output=embed',
+  // PLACEHOLDER opening hours — confirm the real schedule with the salon before
+  // launch. Sunday closed is consistent with the booking flow (skips Sundays).
+  hours: [
+    { day: 'Mon – Fri', open: '9:00 — 19:00' },
+    { day: 'Saturday', open: '9:00 — 18:00' },
+    { day: 'Sunday', open: 'Closed', closed: true },
+  ],
   // Social handles not yet confirmed by the salon — placeholders to replace.
   socials: {
     instagram: 'https://instagram.com/',

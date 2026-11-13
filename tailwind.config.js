@@ -22,8 +22,9 @@ export default {
         },
       },
       fontFamily: {
-        // High-contrast Didone display serif + clean UI sans
-        display: ['"Bodoni Moda"', 'Georgia', 'serif'],
+        // Warm high-contrast display serif + heavy poster sans + clean UI sans
+        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        accent: ['Montserrat', 'Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {

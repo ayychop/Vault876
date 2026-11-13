@@ -88,19 +88,19 @@
 @layer components {
   /* Fluid editorial display scale */
   .display-xl {
-    font-size: clamp(2.75rem, 9vw, 7rem);
-    line-height: 0.96;
-    letter-spacing: -0.045em;
+    font-size: clamp(2.9rem, 9.5vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
   }
   .display-lg {
-    font-size: clamp(2.25rem, 6vw, 4.25rem);
-    line-height: 1.02;
-    letter-spacing: -0.04em;
+    font-size: clamp(2.4rem, 6.4vw, 4.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
   }
   .display-md {
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
-    line-height: 1.06;
-    letter-spacing: -0.035em;
+    font-size: clamp(1.85rem, 4.2vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
   }
 
   /* Small wide-tracked label caps — the couture label voice */
@@ -133,12 +133,21 @@
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-gold:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset,
-      0 18px 40px -14px rgba(212, 175, 55, 0.62);
+    transform: translateY(-2px) scale(1.035);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 24px 55px -12px rgba(212, 175, 55, 0.78);
   }
   .btn-gold:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.99);
+  }
+  /* Inactive: flat, no gold gradient or glow — reads as disabled, not muddy. */
+  .btn-gold:disabled,
+  .btn-gold[disabled] {
+    background: rgb(var(--ink) / 0.1);
+    color: rgb(var(--ink) / 0.4);
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
   }
 
   /* Ghost action — hairline outline in the current ink that warms to gold */
@@ -152,5 +161,131 @@
     border-color: rgba(212, 175, 55, 0.7);
     color: rgb(var(--ink));
     background: rgba(212, 175, 55, 0.06);
+  }
+}
+
+@layer base {
+  /* Filmic grain — a fixed, non-interactive noise veil over the whole surface.
+     Keeps the obsidian ground from reading as a flat digital void. */
+  .grain {
+    position: fixed;
+    inset: -20%;
+    z-index: 45;
+    pointer-events: none;
+    opacity: 0.075;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    will-change: transform;
+    animation: grain-shift 0.7s steps(2) infinite;
+  }
+  @keyframes grain-shift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-3%, 2%); }
+    50% { transform: translate(2%, -3%); }
+    75% { transform: translate(-2%, -2%); }
+    100% { transform: translate(3%, 1%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grain { animation: none; }
+  }
+}
+
+@layer base {
+  /* Lenis smooth-scroll resets — keep native smooth from fighting Lenis. */
+  html.lenis,
+  html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: clip; }
+
+  /* Ambient drifting gold aura — faint, screen-blended so it reads through the
+     obsidian ground without muddying it. */
+  .aura {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: screen;
+    opacity: 0.55;
+  }
+  .aura span {
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(60px);
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.14), transparent 62%);
+    will-change: transform;
+  }
+  .aura span:nth-child(1) {
+    top: -18vmax; left: -12vmax;
+    animation: aura-a 26s ease-in-out infinite;
+  }
+  .aura span:nth-child(2) {
+    bottom: -20vmax; right: -14vmax;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1), transparent 62%);
+    animation: aura-b 34s ease-in-out infinite;
+  }
+  @keyframes aura-a {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(22vmax, 16vmax) scale(1.18); }
+  }
+  @keyframes aura-b {
+    0%, 100% { transform: translate(0, 0) scale(1.1); }
+    50% { transform: translate(-20vmax, -14vmax) scale(1); }
+  }
+
+  /* Slow diagonal sheen sweeping across branded image placeholders. */
+  .placeholder-sheen {
+    background: linear-gradient(
+      115deg,
+      transparent 32%,
+      rgba(212, 175, 55, 0.08) 46%,
+      rgba(255, 255, 255, 0.07) 50%,
+      rgba(212, 175, 55, 0.08) 54%,
+      transparent 68%
+    );
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    animation: sheen 5s ease-in-out infinite;
+  }
+  @keyframes sheen {
+    0% { background-position: 170% 0; }
+    100% { background-position: -170% 0; }
+  }
+
+  /* Gold gleam that sweeps across a service row on hover — the ATL-luxury shine. */
+  .service-gleam {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background: linear-gradient(
+      115deg,
+      transparent 40%,
+      rgba(212, 175, 55, 0.12) 47%,
+      rgba(255, 255, 255, 0.16) 50%,
+      rgba(212, 175, 55, 0.12) 53%,
+      transparent 60%
+    );
+    background-size: 250% 100%;
+    background-position: 150% 0;
+  }
+  .group:hover .service-gleam {
+    opacity: 1;
+    animation: service-sweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes service-sweep {
+    from { background-position: 150% 0; }
+    to { background-position: -60% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aura span,
+    .placeholder-sheen { animation: none; }
+    .group:hover .service-gleam { animation: none; opacity: 0; }
   }
 }

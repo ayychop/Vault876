@@ -7,8 +7,8 @@ import { IconMenu, IconClose } from './icons.jsx'
 
 const links = [
   { label: 'Services', href: '#services' },
-  { label: 'Our Promise', href: '#promise' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Visit', href: '#contact' },
+  { label: 'The Work', href: '#work' },
 ]
 
 export default function Navbar() {

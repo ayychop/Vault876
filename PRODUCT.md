@@ -28,7 +28,7 @@ Phase 1 (this work): the landing page shell — Navbar, Hero, Services grid (6 s
 
 ## Capabilities and Constraints
 
-- Six services at launch: Wig Installations, Relaxers, Braid Extensions, Kids Hair Braiding, Eyelash Extensions, Locs.
+- Six services at launch, using the client's exact flyer/website names: Wig installations, Relaxers, Braid extensions, Kids hair braid, Eyelash extensions, Locs.
 - Fully responsive, mobile-first; animations must be smooth (Framer Motion).
 - React Router in place; `/booking` route stubbed for Phase 2.
 - Must compile and run via `npm run dev`.
@@ -38,9 +38,9 @@ Phase 1 (this work): the landing page shell — Navbar, Hero, Services grid (6 s
 - Name: VAULT 876.
 - Colors (binding): Matte Obsidian Black `#0A0A0A` ground, Crisp White `#FFFFFF` text, Metallic Gold `#D4AF37` for buttons and highlights.
 - **Absolutely no pink** — the incumbent's out-of-place hot-pink accent is the thing being removed.
-- Typography register: high-contrast serif for display headings, clean sans-serif for body/UI.
+- Typography register: warm high-contrast serif (Playfair Display) for display headings; heavy poster-weight sans (Montserrat ExtraBold, uppercase) for service names, for an editorial-serif-meets-ATL-poster contrast; clean sans-serif (Inter) for body/UI.
 - Anti-reference (incumbent): heavy, cluttered, dark, a busy promotional flyer embedded as the page, hot-pink category labels. Replace the flyer with large editorial, magazine-style photography and massive negative space.
-- Tone: luxury fashion brand, "Apple makes a Black urban hair and beauty salon."
+- Tone: "quiet luxury meets cultural swagger" — luxury fashion brand ("Apple makes a Black urban hair and beauty salon") warmed by the confident, unapologetic voice of a high-end American Black salon (luxury Atlanta/Houston). Warm, assured phrasing throughout — BUT service names use the client's exact flyer/website terminology (Wig installations, Relaxers, Braid extensions, Kids hair braid, Eyelash extensions, Locs), never creative rewrites. Tagline: "Unapologetically luxurious. Expertly crafted."
 
 ## Evidence on Hand
 
@@ -55,7 +55,7 @@ No real social handles supplied yet — social icons link to placeholders to be 
 ## Product Principles
 
 1. Negative space is the luxury — remove before adding.
-2. Gold is a precious metal, not a glow: used sparingly on actions and accents, never as ambient decoration.
+2. Gold is a precious metal: on UI it stays precise — primary actions, hairline accents, active states — never a loud wash across chrome or content. The one sanctioned exception is a single, very faint, slow-drifting ambient aura in the obsidian ground, screen-blended so it reads as atmospheric depth rather than decoration.
 3. Every call to action is live and honest; no dead buttons.
 4. Mobile-first, because most clients arrive on a phone.
 5. The brand reads premium before it reads "salon."

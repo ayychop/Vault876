@@ -1,19 +1,66 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { MotionConfig } from 'framer-motion'
+import Lenis from 'lenis'
 import Landing from './pages/Landing.jsx'
 import Booking from './pages/Booking.jsx'
 import EntryGate from './components/EntryGate.jsx'
+import BookNow from './components/BookNow.jsx'
+import ScrollThread from './components/ScrollThread.jsx'
 
 export default function App() {
+  // Buttery inertial scrolling via Lenis — disabled when the visitor prefers
+  // reduced motion, and wired so in-page anchors glide instead of jumping.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const lenis = new Lenis({ duration: 1.15, smoothWheel: true, wheelMultiplier: 1 })
+    let raf
+    const loop = (t) => {
+      lenis.raf(t)
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
+
+    const onAnchorClick = (e) => {
+      const a = e.target.closest('a[href^="#"]')
+      if (!a) return
+      const id = a.getAttribute('href')
+      if (id.length < 2) return
+      const el = document.querySelector(id)
+      if (!el) return
+      e.preventDefault()
+      lenis.scrollTo(el, { offset: -72, duration: 1.2 })
+    }
+    document.addEventListener('click', onAnchorClick)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      document.removeEventListener('click', onAnchorClick)
+      lenis.destroy()
+    }
+  }, [])
+
   return (
     // Respect the visitor's reduced-motion preference across every animation.
     <MotionConfig reducedMotion="user">
+      {/* Ambient drifting gold aura — faint, behind everything, screen-blended */}
+      <div className="aura" aria-hidden>
+        <span />
+        <span />
+      </div>
+      {/* Filmic grain over the whole surface */}
+      <div className="grain" aria-hidden />
+      {/* Gold scroll-progress thread tying the sections together */}
+      <ScrollThread />
       {/* First-visit splash — self-gates on sessionStorage */}
       <EntryGate />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/booking" element={<Booking />} />
       </Routes>
+      {/* Always-on Book Now (hides itself on the booking flow) */}
+      <BookNow />
     </MotionConfig>
   )
 }

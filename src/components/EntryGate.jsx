@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import Logo from './Logo.jsx'
+import BrandMark from './BrandMark.jsx'
 
 const KEY = 'vault876_entered'
 const EASE = [0.16, 1, 0.3, 1]
@@ -90,7 +90,7 @@ export default function EntryGate() {
               animate={reduce ? {} : { scale: [1, 1.035, 1] }}
               transition={{ duration: 3.4, ease: 'easeInOut', repeat: Infinity }}
             >
-              <Logo size={236} />
+              <BrandMark size={232} />
             </motion.div>
           </motion.button>
 
@@ -99,11 +99,12 @@ export default function EntryGate() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8, ease: EASE }}
-            className="label-caps absolute bottom-[14vh] text-ink/55"
+            className="absolute bottom-[13vh] font-sans text-[0.78rem] font-light uppercase text-ink/85"
+            style={{ letterSpacing: '0.46em' }}
           >
             <motion.span
-              className="inline-block"
-              animate={reduce ? {} : { opacity: [0.5, 1, 0.5] }}
+              className="inline-block pl-[0.46em]"
+              animate={reduce ? {} : { opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2.6, ease: 'easeInOut', repeat: Infinity }}
             >
               Enter the Vault

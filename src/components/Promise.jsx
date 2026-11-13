@@ -45,8 +45,9 @@ export default function Promise() {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl sm:aspect-[3/4]">
               <img
-                src="/images/editorial-afro-duo.jpg"
-                alt="Two VAULT 876 clients wearing natural afro-textured styles"
+                src="/images/work-salon.jpg"
+                alt="Inside the VAULT 876 salon — the chair where the work happens"
+                loading="lazy"
                 className="h-full w-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent" />

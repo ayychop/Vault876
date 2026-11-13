@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { fadeUp, stagger, inView } from '../lib/motion.js'
 import { site } from '../lib/site.js'
-import Logo from './Logo.jsx'
+import BrandMark from './BrandMark.jsx'
 import {
   IconPhone,
   IconPin,
@@ -20,7 +20,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer id="contact" className="scroll-mt-20 border-t border-ink/10 bg-canvas">
+    <footer className="border-t border-ink/10 bg-canvas">
       {/* CTA band */}
       <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-28">
         <motion.div
@@ -35,8 +35,8 @@ export default function Footer() {
               Ready when you are.
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-ink/55">
-              Book online in Phase 2, or call the salon now and we will find you a
-              chair. Walk-ins welcome when we can fit you in.
+              Reserve your chair online in a few taps, or call the salon and we
+              will find you a slot. Walk-ins welcome when we can fit you in.
             </p>
             <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
               <Link to="/booking" className="btn-gold">
@@ -50,7 +50,7 @@ export default function Footer() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="hidden lg:block">
-            <Logo size={168} />
+            <BrandMark size={150} glow />
           </motion.div>
         </motion.div>
 
@@ -118,6 +118,9 @@ export default function Footer() {
       <div className="border-t border-ink/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink/40 sm:flex-row sm:px-8">
           <p>© {new Date().getFullYear()} VAULT 876 — Hair &amp; Beauty</p>
+          <p className="order-first font-sans text-[0.68rem] uppercase tracking-[0.3em] text-ink/55 sm:order-none">
+            Unapologetically luxurious. Expertly crafted.
+          </p>
           <p className="tracking-wide">{site.website}</p>
         </div>
       </div>
