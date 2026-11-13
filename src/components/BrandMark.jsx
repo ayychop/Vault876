@@ -1,36 +1,35 @@
-import logoUrl from '../assets/logo-optimized.png'
+import logoUrl from '../assets/vault-logo-final.png'
 
-// The processed VAULT 876 crest in a premium circular container:
-// a refined double gold border (inner hairline + outer ring across an obsidian
-// gap) and an optional soft gold glow. The image is pre-centred on obsidian so
-// object-cover seats it seamlessly.
+// The full VAULT 876 crest lockup — gold tools + wordmark on transparency.
+// `size` is the rendered HEIGHT in px; the width scales with the artwork.
+// `glow` adds a soft gold aura + drop-shadow behind the mark.
 export default function BrandMark({ size = 40, glow = false, className = '' }) {
   return (
     <span
-      className={`relative inline-flex shrink-0 ${className}`}
-      style={{ width: size, height: size }}
+      className={`relative inline-flex shrink-0 items-center justify-center ${className}`}
+      style={{ height: size }}
     >
       {glow && (
         <span
           aria-hidden
           className="pointer-events-none absolute rounded-full"
           style={{
-            inset: '-28%',
+            inset: '-26%',
             background:
-              'radial-gradient(circle, rgba(212,175,55,0.4) 0%, rgba(212,175,55,0.1) 45%, transparent 70%)',
+              'radial-gradient(circle, rgba(212,175,55,0.36) 0%, rgba(212,175,55,0.09) 48%, transparent 72%)',
           }}
         />
       )}
       <img
         src={logoUrl}
         alt="VAULT 876 — Hair & Beauty"
-        width={size}
-        height={size}
-        className="relative h-full w-full rounded-full object-cover"
-        style={{
-          // the medallion carries its own baked gold rim; add only a faint lift
-          boxShadow: '0 0 0 1px rgba(212,175,55,0.25), 0 8px 24px -8px rgba(0,0,0,0.7)',
-        }}
+        draggable={false}
+        className="relative h-full w-auto select-none object-contain"
+        style={
+          glow
+            ? { filter: 'drop-shadow(0 6px 22px rgba(212,175,55,0.3))' }
+            : undefined
+        }
       />
     </span>
   )

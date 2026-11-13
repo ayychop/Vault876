@@ -46,35 +46,59 @@ export default function EntryGate() {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-canvas"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-canvas"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.12, filter: 'blur(6px)' }}
           transition={{ duration: 0.95, ease: EASE }}
         >
-          {/* Soft gold glow, breathing in step with the logo.
-              Centred via a wrapper because Framer Motion's animated transform
-              (scale) would otherwise clobber translate-based centering. */}
+          {/* ---- Continuous premium glow stack, all centred behind the crest ---- */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
+            {/* 1. Slow-rotating conic gold halo — a living, shifting glow that
+                   never fully resolves into a ring (heavy blur keeps it soft). */}
             <motion.div
-              className="h-[62vmin] w-[62vmin] rounded-full"
+              className="absolute h-[86vmin] w-[86vmin] rounded-full"
               style={{
                 background:
-                  'radial-gradient(circle, rgba(212,175,55,0.20) 0%, rgba(212,175,55,0.06) 42%, transparent 70%)',
+                  'conic-gradient(from 0deg, rgba(212,175,55,0) 0deg, rgba(212,175,55,0.20) 65deg, rgba(231,204,110,0.34) 135deg, rgba(212,175,55,0.10) 215deg, rgba(212,175,55,0) 320deg)',
+                filter: 'blur(64px)',
+                opacity: 0.65,
+              }}
+              animate={reduce ? {} : { rotate: 360 }}
+              transition={{ duration: 24, ease: 'linear', repeat: Infinity }}
+            />
+            {/* 2. Counter-rotating softer halo for depth — slower, fainter. */}
+            <motion.div
+              className="absolute h-[66vmin] w-[66vmin] rounded-full"
+              style={{
+                background:
+                  'conic-gradient(from 180deg, rgba(212,175,55,0) 0deg, rgba(231,204,110,0.22) 120deg, rgba(212,175,55,0) 260deg)',
+                filter: 'blur(52px)',
+                opacity: 0.5,
+              }}
+              animate={reduce ? {} : { rotate: -360 }}
+              transition={{ duration: 34, ease: 'linear', repeat: Infinity }}
+            />
+            {/* 3. Core radial bloom — strong, soft, breathing. */}
+            <motion.div
+              className="absolute h-[58vmin] w-[58vmin] rounded-full"
+              style={{
+                background:
+                  'radial-gradient(circle, rgba(212,175,55,0.30) 0%, rgba(212,175,55,0.08) 42%, transparent 70%)',
               }}
               animate={
                 reduce
-                  ? { opacity: 0.6 }
-                  : { opacity: [0.45, 0.8, 0.45], scale: [0.95, 1.08, 0.95] }
+                  ? { opacity: 0.7 }
+                  : { opacity: [0.55, 0.9, 0.55], scale: [0.96, 1.07, 0.96] }
               }
-              transition={{ duration: 3.4, ease: 'easeInOut', repeat: Infinity }}
+              transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
             />
           </div>
 
-          {/* Full crest lockup — the entry button. Sized to feel like a
-              cinematic statement without crowding the frame. */}
+          {/* Full crest lockup — the entry button, with its own continuous,
+              breathing gold glow so it reads as lit from within. */}
           <motion.button
             type="button"
             onClick={enter}
@@ -91,10 +115,20 @@ export default function EntryGate() {
               src={logoFull}
               alt="VAULT 876 — Hair & Beauty"
               draggable={false}
-              className="w-[min(78vw,560px)] select-none"
-              style={{ filter: 'drop-shadow(0 18px 60px rgba(212,175,55,0.22))' }}
-              animate={reduce ? {} : { scale: [1, 1.025, 1] }}
-              transition={{ duration: 3.6, ease: 'easeInOut', repeat: Infinity }}
+              className="w-[min(80vw,580px)] select-none"
+              animate={
+                reduce
+                  ? { filter: 'drop-shadow(0 0 48px rgba(212,175,55,0.4))' }
+                  : {
+                      scale: [1, 1.025, 1],
+                      filter: [
+                        'drop-shadow(0 0 36px rgba(212,175,55,0.30))',
+                        'drop-shadow(0 0 72px rgba(212,175,55,0.55))',
+                        'drop-shadow(0 0 36px rgba(212,175,55,0.30))',
+                      ],
+                    }
+              }
+              transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
             />
           </motion.button>
 
