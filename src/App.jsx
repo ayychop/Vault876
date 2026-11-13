@@ -7,6 +7,7 @@ import Booking from './pages/Booking.jsx'
 import EntryGate from './components/EntryGate.jsx'
 import BookNow from './components/BookNow.jsx'
 import ScrollThread from './components/ScrollThread.jsx'
+import CursorGlow from './components/CursorGlow.jsx'
 
 export default function App() {
   // Buttery inertial scrolling via Lenis — disabled when the visitor prefers
@@ -51,6 +52,8 @@ export default function App() {
       </div>
       {/* Filmic grain over the whole surface */}
       <div className="grain" aria-hidden />
+      {/* Desktop-only glowing gold cursor */}
+      <CursorGlow />
       {/* Gold scroll-progress thread tying the sections together */}
       <ScrollThread />
       {/* First-visit splash — self-gates on sessionStorage */}

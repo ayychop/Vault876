@@ -14,7 +14,7 @@ export default function ImagePlaceholder({
 }) {
   return (
     <div
-      className={`relative overflow-hidden bg-obsidian ${className}`}
+      className={`relative overflow-hidden bg-canvas ${className}`}
       role="img"
       aria-label={label ? `${label} — photography coming soon` : 'Photography coming soon'}
     >
@@ -25,7 +25,7 @@ export default function ImagePlaceholder({
         className="pointer-events-none absolute inset-0 opacity-[0.5]"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(135deg, rgba(255,255,255,0.016) 0px, rgba(255,255,255,0.016) 1px, transparent 1px, transparent 9px)',
+            'repeating-linear-gradient(135deg, rgb(var(--ink) / 0.02) 0px, rgb(var(--ink) / 0.02) 1px, transparent 1px, transparent 9px)',
         }}
       />
       {/* diagonal sheen sweep */}
@@ -49,7 +49,7 @@ export default function ImagePlaceholder({
             </span>
           )}
           {caption && (
-            <p className="mt-2 max-w-xs font-display text-xl leading-tight text-white/90">
+            <p className="mt-2 max-w-xs font-display text-xl leading-tight text-ink/90">
               {caption}
             </p>
           )}
@@ -57,7 +57,7 @@ export default function ImagePlaceholder({
       )}
 
       {/* hairline frame */}
-      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/10" />
+      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-ink/10" />
       {children}
     </div>
   )

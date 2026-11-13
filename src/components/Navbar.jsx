@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Wordmark from './Wordmark.jsx'
 import ThemeToggle from './ThemeToggle.jsx'
+import MagneticButton from './MagneticButton.jsx'
 import { IconMenu, IconClose } from './icons.jsx'
 
 const links = [
@@ -68,9 +69,11 @@ export default function Navbar() {
             </ul>
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <Link to="/booking" className="btn-gold !px-6 !py-2.5">
-                Book Now
-              </Link>
+              <MagneticButton strength={0.5}>
+                <Link to="/booking" className="btn-gold !px-6 !py-2.5">
+                  Book Now
+                </Link>
+              </MagneticButton>
             </div>
           </div>
 

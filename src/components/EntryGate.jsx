@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import BrandMark from './BrandMark.jsx'
+import logoFull from '../assets/vault-logo-final.png'
 
 const KEY = 'vault876_entered'
 const EASE = [0.16, 1, 0.3, 1]
@@ -48,8 +48,8 @@ export default function EntryGate() {
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-canvas"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.12 }}
-          transition={{ duration: 0.9, ease: EASE }}
+          exit={{ opacity: 0, scale: 1.12, filter: 'blur(6px)' }}
+          transition={{ duration: 0.95, ease: EASE }}
         >
           {/* Soft gold glow, breathing in step with the logo.
               Centred via a wrapper because Framer Motion's animated transform
@@ -59,10 +59,10 @@ export default function EntryGate() {
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
             <motion.div
-              className="h-[46vmin] w-[46vmin] rounded-full"
+              className="h-[62vmin] w-[62vmin] rounded-full"
               style={{
                 background:
-                  'radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.06) 40%, transparent 70%)',
+                  'radial-gradient(circle, rgba(212,175,55,0.20) 0%, rgba(212,175,55,0.06) 42%, transparent 70%)',
               }}
               animate={
                 reduce
@@ -73,43 +73,54 @@ export default function EntryGate() {
             />
           </div>
 
-          {/* Pulsing logo — the entry button */}
+          {/* Full crest lockup — the entry button. Sized to feel like a
+              cinematic statement without crowding the frame. */}
           <motion.button
             type="button"
             onClick={enter}
             onKeyDown={onKey}
             aria-label="Enter the Vault — open the site"
-            className="relative rounded-full outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-4 focus-visible:ring-offset-canvas"
-            initial={{ opacity: 0, scale: 0.92 }}
+            className="relative mb-[8vh] rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-8 focus-visible:ring-offset-canvas"
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: EASE }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 1.1, ease: EASE }}
+            whileHover={{ scale: 1.025 }}
+            whileTap={{ scale: 0.985 }}
           >
-            <motion.div
-              animate={reduce ? {} : { scale: [1, 1.035, 1] }}
-              transition={{ duration: 3.4, ease: 'easeInOut', repeat: Infinity }}
-            >
-              <BrandMark size={232} />
-            </motion.div>
+            <motion.img
+              src={logoFull}
+              alt="VAULT 876 — Hair & Beauty"
+              draggable={false}
+              className="w-[min(78vw,560px)] select-none"
+              style={{ filter: 'drop-shadow(0 18px 60px rgba(212,175,55,0.22))' }}
+              animate={reduce ? {} : { scale: [1, 1.025, 1] }}
+              transition={{ duration: 3.6, ease: 'easeInOut', repeat: Infinity }}
+            />
           </motion.button>
 
-          {/* Enter prompt */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
+          {/* Enter prompt — sleek, wide-tracked couture caps */}
+          <motion.button
+            type="button"
+            onClick={enter}
+            onKeyDown={onKey}
+            aria-hidden
+            tabIndex={-1}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: EASE }}
-            className="absolute bottom-[13vh] font-sans text-[0.78rem] font-light uppercase text-ink/85"
-            style={{ letterSpacing: '0.46em' }}
+            transition={{ delay: 0.8, duration: 0.9, ease: EASE }}
+            className="group absolute bottom-[11vh] flex flex-col items-center gap-3 outline-none"
           >
             <motion.span
-              className="inline-block pl-[0.46em]"
-              animate={reduce ? {} : { opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2.6, ease: 'easeInOut', repeat: Infinity }}
+              className="pl-[0.5em] font-sans text-[0.8rem] font-light uppercase text-ink/90"
+              style={{ letterSpacing: '0.5em' }}
+              animate={reduce ? {} : { opacity: [0.65, 1, 0.65] }}
+              transition={{ duration: 2.8, ease: 'easeInOut', repeat: Infinity }}
             >
               Enter the Vault
             </motion.span>
-          </motion.p>
+            {/* thin gold underline that breathes with the prompt */}
+            <span className="h-px w-10 bg-gradient-to-r from-transparent via-gold to-transparent" />
+          </motion.button>
         </motion.div>
       )}
     </AnimatePresence>

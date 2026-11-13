@@ -42,8 +42,21 @@
       button, h1, h2, h3, h4, p, span, address, input, textarea
     ) {
     transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: 350ms;
+    transition-duration: 500ms;
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Desktop custom cursor: hide the native pointer; CursorGlow draws its own. */
+  @media (pointer: fine) {
+    html,
+    html a,
+    html button,
+    html input,
+    html textarea,
+    html label,
+    html [role='button'] {
+      cursor: none;
+    }
   }
 
   /* Browser surfaces carry the house palette, not UA defaults */
@@ -208,6 +221,29 @@
     overflow: hidden;
     mix-blend-mode: screen;
     opacity: 0.55;
+  }
+  /* Light mode: screen washes gold out on white, so tint with multiply instead. */
+  :root:not(.dark) .aura {
+    mix-blend-mode: multiply;
+    opacity: 0.35;
+  }
+
+  /* Theme-aware hero overlays — darken on obsidian, lighten on white, so the
+     headline stays readable in both modes (canvas = ground colour). */
+  .hero-grade {
+    background: linear-gradient(
+      to top,
+      rgb(var(--canvas)) 0%,
+      rgb(var(--canvas) / 0.35) 45%,
+      rgb(var(--canvas) / 0.55) 100%
+    );
+  }
+  .hero-vignette {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 32%,
+      rgb(var(--canvas) / 0.62) 100%
+    );
   }
   .aura span {
     position: absolute;
