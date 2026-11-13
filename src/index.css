@@ -334,8 +334,8 @@
      never muddies against the light ground. */
   .wordmark-coin {
     --coin-ring: 0.55;
-    --glow-min: 0.14;
-    --glow-max: 0.42;
+    --glow-min: 0.18;
+    --glow-max: 0.48;
     box-shadow:
       0 0 0 1px rgba(212, 175, 55, var(--coin-ring)),
       0 0 16px rgba(212, 175, 55, var(--glow-max));
@@ -343,8 +343,8 @@
     will-change: box-shadow;
   }
   .wordmark-type {
-    --glow-min: 0.14;
-    --glow-max: 0.4;
+    --glow-min: 0.18;
+    --glow-max: 0.46;
     filter: drop-shadow(0 0 9px rgba(212, 175, 55, var(--glow-max)));
     animation: wordmark-type-glow 4s ease-in-out infinite;
     will-change: filter;

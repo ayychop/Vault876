@@ -70,7 +70,7 @@ export default function Hero() {
           draggable={false}
           loading="eager"
           decoding="async"
-          className="w-[150vw] max-w-[1300px] select-none object-contain opacity-[0.06] [filter:brightness(0)] dark:opacity-[0.16] dark:[filter:none] sm:w-[95vw]"
+          className="w-[150vw] max-w-[1300px] select-none object-contain opacity-[0.08] [filter:brightness(0)] dark:opacity-[0.16] dark:[filter:none] sm:w-[95vw]"
         />
       </motion.div>
 
@@ -109,7 +109,7 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           transition={{ delay: 1.1 }}
-          className="mt-10 max-w-md font-sans text-[0.78rem] font-light uppercase tracking-[0.42em] text-ink/70"
+          className="mt-10 max-w-md font-sans text-[0.78rem] font-normal uppercase tracking-[0.42em] text-ink/90 dark:font-light dark:text-ink/65"
         >
           Luxury hair &amp; beauty — {site.address.city}
         </motion.p>
