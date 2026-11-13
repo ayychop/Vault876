@@ -1,0 +1,7 @@
+# Supabase Edge Functions config for VAULT 876.
+# The Stripe webhook is called by Stripe (no Supabase JWT), so JWT verification
+# must be off for it. The other two are called from the browser with the anon
+# key as a Bearer token, so they keep the default JWT check.
+
+[functions.stripe-webhook]
+verify_jwt = false

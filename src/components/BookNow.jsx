@@ -10,7 +10,7 @@ const EASE = [0.16, 1, 0.3, 1]
 export default function BookNow() {
   const { pathname } = useLocation()
   // Public CTA only — hidden on the booking flow and the owner admin portal.
-  const show = pathname !== '/booking' && !pathname.startsWith('/admin')
+  const show = !pathname.startsWith('/booking') && !pathname.startsWith('/admin')
 
   return (
     <AnimatePresence>

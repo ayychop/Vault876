@@ -37,6 +37,7 @@ function slotState(date, slot) {
 export default function Booking() {
   const [params] = useSearchParams()
   const preset = params.get('service')
+  const cancelled = params.get('cancelled') // returned from an abandoned Stripe checkout
 
   const [step, setStep] = useState(1)
   const [picked, setPicked] = useState(() =>
@@ -80,18 +81,22 @@ export default function Booking() {
     (step === 3 && details.name.trim() && details.phone.trim())
 
   // Insert one row per chosen service (matching the per-service line items the
-  // owner portal + tax export expect), then show the confirmation.
+  // owner portal + tax export expect), all tied to one booking_group, then hand
+  // off to Stripe Checkout for the £20 deposit. The stripe-webhook flips the
+  // group to Confirmed once the deposit is captured.
   const submit = async () => {
     if (!canContinue || submitting) return
     setError('')
 
-    // Demo fallback: if the backend isn't configured, confirm without saving.
+    // Demo fallback: if the backend isn't configured (e.g. the static mirror),
+    // confirm without saving or charging.
     if (!supabase) {
       setDone(true)
       return
     }
 
     const appointmentDate = date ? date.toLocaleDateString('en-CA') : null // YYYY-MM-DD
+    const bookingGroup = crypto.randomUUID() // one deposit covers every row
     const rows = picked.map((slug) => {
       const s = services.find((x) => x.slug === slug)
       return {
@@ -104,22 +109,39 @@ export default function Booking() {
         price: s?.price || 0,
         appointment_date: appointmentDate,
         appointment_time: time,
-        status: 'Pending',
+        status: 'Awaiting Payment',
+        booking_group: bookingGroup,
         photo_name: details.photo || null,
       }
     })
 
     setSubmitting(true)
     const { error: insertError } = await supabase.from('bookings').insert(rows)
-    setSubmitting(false)
-
     if (insertError) {
+      setSubmitting(false)
       setError(
         'We couldn’t save your booking just now. Please try again, or call the salon and we’ll sort it.',
       )
       return
     }
-    setDone(true)
+
+    // Open secure Stripe Checkout for the deposit, then redirect the browser.
+    const names = picked.map((slug) => services.find((x) => x.slug === slug)?.name).filter(Boolean)
+    const serviceLabel =
+      names.length <= 1 ? names[0] || 'Appointment' : `${names[0]} +${names.length - 1} more`
+
+    const { data, error: fnError } = await supabase.functions.invoke('create-checkout-session', {
+      body: { booking_group: bookingGroup, service_name: serviceLabel },
+    })
+    setSubmitting(false)
+
+    if (fnError || !data?.url) {
+      setError(
+        'Your booking is saved, but we couldn’t open secure checkout. Please call the salon to pay your £20 deposit and confirm.',
+      )
+      return
+    }
+    window.location.href = data.url
   }
 
   const next = () => {
@@ -178,6 +200,16 @@ export default function Booking() {
 
       {/* Body */}
       <main className="mx-auto w-full max-w-4xl flex-1 px-5 pb-40 pt-12 sm:px-8">
+        {cancelled && !done && (
+          <div className="mb-8 rounded-xl border border-gold/30 bg-gold/[0.06] px-4 py-3 text-sm text-ink/70">
+            Payment wasn't completed, so nothing was charged. Pick your details again whenever
+            you're ready — or call the salon on{' '}
+            <a href={site.phoneHref} className="text-gold underline-offset-2 hover:underline">
+              {site.phoneDisplay}
+            </a>
+            .
+          </div>
+        )}
         {done ? (
           <Confirmation picked={picked} date={date} time={time} fmtDay={fmtDay} styleBySlug={styleBySlug} />
         ) : (
@@ -368,7 +400,10 @@ export default function Booking() {
               {step === 3 && (
                 <>
                   <h1 className="display-md font-display font-semibold text-ink">Your details</h1>
-                  <p className="mt-3 text-ink/55">We'll call to confirm your appointment.</p>
+                  <p className="mt-3 text-ink/55">
+                    A <span className="text-gold">£20 deposit</span> secures your appointment — the
+                    balance is paid in the salon. You'll pay securely with Stripe on the next step.
+                  </p>
                   <div className="mt-8 grid gap-4 sm:grid-cols-2">
                     <Field label="Full name *" value={details.name} onChange={(v) => setDetails({ ...details, name: v })} placeholder="Jane Doe" />
                     <Field label="Phone *" value={details.phone} onChange={(v) => setDetails({ ...details, phone: v })} placeholder="07…" type="tel" />
@@ -419,7 +454,11 @@ export default function Booking() {
               disabled={!canContinue || submitting}
               className="btn-gold !px-10 !py-4"
             >
-              {step < 3 ? 'Continue' : submitting ? 'Saving…' : 'Confirm booking'}
+              {step < 3
+                ? 'Continue'
+                : submitting
+                  ? 'Opening secure checkout…'
+                  : 'Pay £20 deposit'}
             </button>
           </div>
         </div>

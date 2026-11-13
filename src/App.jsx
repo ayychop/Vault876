@@ -4,6 +4,7 @@ import { MotionConfig, AnimatePresence, motion } from 'framer-motion'
 import Lenis from 'lenis'
 import Landing from './pages/Landing.jsx'
 import Booking from './pages/Booking.jsx'
+import BookingSuccess from './pages/BookingSuccess.jsx'
 import Admin from './pages/Admin.jsx'
 import EntryGate from './components/EntryGate.jsx'
 import BookNow from './components/BookNow.jsx'
@@ -90,6 +91,7 @@ export default function App() {
           <Routes location={location}>
             <Route path="/" element={<Landing />} />
             <Route path="/booking" element={<Booking />} />
+            <Route path="/booking/success" element={<BookingSuccess />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </motion.div>

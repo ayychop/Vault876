@@ -34,3 +34,6 @@ npm-debug.log*
 .claude/skills
 .claude/plugins
 .impeccable/hook.cache.json
+
+# Supabase CLI scratch
+supabase/.temp/

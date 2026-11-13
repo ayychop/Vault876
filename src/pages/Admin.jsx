@@ -31,6 +31,7 @@ const fmtDate = (iso) =>
 const STATUS_STYLES = {
   Confirmed: 'border-gold/40 bg-gold/10 text-gold',
   Pending: 'border-ink/20 bg-ink/[0.04] text-ink/60',
+  'Awaiting Payment': 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400',
   Completed: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
 }
 
