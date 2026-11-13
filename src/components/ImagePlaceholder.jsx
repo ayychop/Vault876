@@ -36,12 +36,13 @@ export default function ImagePlaceholder({
         <BrandMark
           size={logoSize}
           glow={!watermark}
-          // Watermark is theme-aware: a faint obsidian silhouette on white
-          // (gold washes out there), and a slightly boosted gold crest on
-          // obsidian — so it reads as intentional in both modes.
+          // Watermark shows the real gold crest in both themes — faint enough to
+          // sit behind the copy, strong enough to read clearly. (A black
+          // silhouette on white looked washed-out and bare; gold at this opacity
+          // holds up on white, and a touch brighter on obsidian.)
           className={
             watermark
-              ? 'opacity-[0.07] [filter:brightness(0)] dark:opacity-[0.24] dark:[filter:none]'
+              ? 'opacity-[0.22] [filter:saturate(1.1)] dark:opacity-[0.28] dark:[filter:none]'
               : ''
           }
         />
