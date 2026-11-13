@@ -349,6 +349,24 @@
     animation: wordmark-type-glow 4s ease-in-out infinite;
     will-change: filter;
   }
+  /* Her signature swash "V" — pixel-traced from the original logo and recoloured
+     with currentColor so it flips white/black with the theme exactly like the
+     Bodoni "AULT" beside it. Sized in em so it tracks every nav size; the vertex
+     and curl hang just below the baseline like a dropped display capital. */
+  .logo-v {
+    display: inline-block;
+    height: 1.32em;
+    aspect-ratio: 0.6527;
+    margin-right: -0.02em;
+    vertical-align: -0.26em;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
   @keyframes wordmark-coin-glow {
     0%, 100% {
       box-shadow:

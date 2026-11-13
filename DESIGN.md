@@ -12,6 +12,12 @@ colors:
   gold-deep: "#A8862A"
   amber-limited: "#FBBF24"
 typography:
+  logo:
+    fontFamily: '"Bodoni Moda", "Playfair Display", Georgia, serif'
+    fontWeight: 900
+    opticalSize: 96
+    letterSpacing: "-0.02em"
+    note: "VAULT 876 navbar wordmark only. Extreme-contrast Didone cloning the client's logo lettering; paired with a pixel-traced swash 'V' (src/assets/logo-v.png) masked in currentColor."
   display:
     fontFamily: '"Playfair Display", Georgia, serif'
     fontSize: "clamp(2.9rem, 9.5vw, 7.5rem)"
@@ -135,13 +141,15 @@ A monochrome obsidian-and-white ground carrying one warm metallic accent; everyt
 
 ## Typography
 
+**Wordmark Font:** Bodoni Moda (with Playfair Display, Georgia, serif) — weight 900 at optical size 96. **Used only for the VAULT 876 navbar lockup**, where its extreme Didone contrast clones the client's logo lettering.
 **Display Font:** Playfair Display (with Georgia, serif) — weights 400–900, italic available.
 **Accent Font:** Montserrat (with Inter, system-ui) — ExtraBold/Black, uppercase.
 **Body / UI Font:** Inter (with system-ui, -apple-system) — weights 300–600.
 
-**Character:** An editorial contrast of registers — a warm, high-contrast Didone serif for the expensive voice, a heavy ATL-poster sans shouting the service names, and a quiet geometric sans for everything functional. The serif carries warmth and couture; the poster caps carry swagger; Inter stays out of the way.
+**Character:** An editorial contrast of registers — a warm, high-contrast Didone serif for the expensive voice, a heavy ATL-poster sans shouting the service names, and a quiet geometric sans for everything functional. The serif carries warmth and couture; the poster caps carry swagger; Inter stays out of the way. The wordmark stands apart in a sharper Didone (Bodoni Moda) because it is a literal clone of the salon's logo, not body voice.
 
 ### Hierarchy
+- **Wordmark** (Bodoni Moda 900, optical size 96, uppercase, tracking −0.02em): The VAULT 876 navbar lockup only. "VAULT" is theme-aware (`currentColor`), "876" is gold. The leading **"V" is a pixel-traced swash** of the client's own logo (`src/assets/logo-v.png`), applied as a `currentColor` mask so it flips with the theme and glows with the breathing gold bloom. Below it, "HAIR & BEAUTY" runs as a tiny wide-tracked Inter caps line flanked by gold hairlines.
 - **Display** (Playfair Display 900, `clamp(2.9rem, 9.5vw, 7.5rem)`, line-height 0.9, tracking −0.055em): Hero and page-opening headlines. Set very tight and very large, often with a single word italicized at medium weight and the terminal period in gold.
 - **Headline** (Playfair Display 600, `clamp(1.85rem, 4.2vw, 3rem)`, line-height 1.04, tracking −0.045em): Section and booking-step titles ("The Menu", "Choose your services").
 - **Accent / Service Name** (Montserrat 800, `clamp(1.4rem, 3.8vw, 2.4rem)`, uppercase, line-height 0.95): The six service names in the editorial row-list. Poster-weight, warms to gold on hover. Uses the client's exact names — never rewritten.
