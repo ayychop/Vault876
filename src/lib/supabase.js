@@ -7,9 +7,19 @@ import { createClient } from '@supabase/supabase-js'
 const url = import.meta.env.VITE_SUPABASE_URL
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-// A single shared client for the whole app.
+// A single shared client for the whole app. persistSession keeps the admin
+// signed in across reloads, and autoRefreshToken + the default Authorization
+// header mean every PostgREST request carries the user's JWT automatically.
 export const supabase =
-  url && anonKey ? createClient(url, anonKey) : null
+  url && anonKey
+    ? createClient(url, anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      })
+    : null
 
 // True when the env vars are present — lets the UI fail gracefully (and keep
 // the demo working) if the backend isn't configured in a given environment.

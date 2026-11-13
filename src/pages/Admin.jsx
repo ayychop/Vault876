@@ -61,6 +61,32 @@ export default function Admin() {
       return
     }
 
+    // Make sure a valid session is in place BEFORE fetching. supabase-js attaches
+    // this session's JWT to every request automatically, so Postgres sees the
+    // request as the `authenticated` role.
+    const {
+      data: { session: live },
+    } = await supabase.auth.getSession()
+
+    if (!live) {
+      setLoadError('Your session has expired — please sign in again.')
+      setBookings([])
+      setServices([])
+      setLoading(false)
+      return
+    }
+
+    // Confirm the DB role the request will run as (should log "authenticated").
+    try {
+      const claims = JSON.parse(atob(live.access_token.split('.')[1]))
+      // eslint-disable-next-line no-console
+      console.log(
+        `[VAULT876] Supabase auth role before fetch: "${claims.role}" · user: ${live.user?.email}`,
+      )
+    } catch {
+      /* token decode is best-effort for logging only */
+    }
+
     const [bk, sv] = await Promise.all([
       supabase
         .from('bookings')
