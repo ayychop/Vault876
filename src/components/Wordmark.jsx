@@ -45,7 +45,7 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
       <span className="inline-flex min-w-0 flex-col items-stretch leading-none">
         {/* Line 1 — "VAULT 876" in heavy high-contrast Playfair, tight kerning */}
         <span
-          className={`wordmark-type flex items-baseline justify-center gap-[0.2em] font-display font-black uppercase leading-none tracking-[-0.005em] ${s.main}`}
+          className={`wordmark-type flex items-baseline justify-center gap-[0.12em] font-logo font-black uppercase leading-none tracking-[-0.02em] [font-variation-settings:'opsz'_96] ${s.main}`}
         >
           <span className="text-ink">VAULT</span>
           <span className="text-gold transition-colors duration-300 group-hover:text-gold-soft">
