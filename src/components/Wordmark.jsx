@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import emblem from '../assets/crest-emblem-square.png'
-import vaMask from '../assets/logo-va.png'
+import vaultMask from '../assets/logo-vault.png'
+import digitsMask from '../assets/logo-876.png'
 
 // VAULT 876 navbar lockup: a fixed-size obsidian "coin" + typography wordmark.
 //   coin    — a perfect circle (#0A0A0A) with a 1px gold ring, holding the gold
@@ -42,24 +43,25 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
         />
       </span>
 
-      {/* Typographic wordmark — a CSS clone of the crest lettering */}
+      {/* Wordmark — "VAULT 876" traced directly from the client's own logo:
+          the whole "VAULT" and the "876" are pixel-masks of her lettering, so it
+          is identical to the brand (no font approximation, no ligature seam).
+          "VAULT" takes currentColor (theme-aware white/black); "876" is gold.
+          Both masks share one baseline window, so the V-swash hangs below the
+          digits exactly as she drew it. */}
       <span className="inline-flex min-w-0 flex-col items-stretch leading-none">
-        {/* Line 1 — "VAULT 876" in heavy high-contrast Playfair, tight kerning */}
-        <span
-          className={`wordmark-type flex items-baseline justify-center gap-[0.12em] font-logo font-black uppercase leading-none tracking-[-0.02em] [font-variation-settings:'opsz'_96] ${s.main}`}
-        >
-          <span className="text-ink">
-            <span className="sr-only">VA</span>
-            <span
-              className="logo-va"
-              style={{ WebkitMaskImage: `url(${vaMask})`, maskImage: `url(${vaMask})` }}
-              aria-hidden
-            />
-            ULT
-          </span>
-          <span className="text-gold transition-colors duration-300 group-hover:text-gold-soft">
-            876
-          </span>
+        <span className={`wordmark-type flex items-end justify-center leading-none ${s.main}`}>
+          <span className="sr-only">VAULT 876</span>
+          <span
+            className="logo-word text-ink"
+            style={{ aspectRatio: '512 / 192', WebkitMaskImage: `url(${vaultMask})`, maskImage: `url(${vaultMask})` }}
+            aria-hidden
+          />
+          <span
+            className="logo-word logo-word--gold ml-[0.14em]"
+            style={{ aspectRatio: '238 / 192', WebkitMaskImage: `url(${digitsMask})`, maskImage: `url(${digitsMask})` }}
+            aria-hidden
+          />
         </span>
         {/* Line 2 — "HAIR & BEAUTY" flanked by gold hairlines, spanning line 1 */}
         <span className={`flex items-center gap-[0.5em] ${s.gap}`}>

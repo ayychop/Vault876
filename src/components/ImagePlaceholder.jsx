@@ -48,13 +48,22 @@ export default function ImagePlaceholder({
           draggable={false}
           loading="lazy"
           decoding="async"
-          className="w-[84%] max-w-[480px] -translate-y-[7%] select-none object-contain opacity-[0.1] mix-blend-multiply [filter:brightness(0)] dark:opacity-[0.22] dark:mix-blend-screen dark:[filter:none]"
+          className="w-[80%] max-w-[460px] -translate-y-[16%] select-none object-contain opacity-[0.1] mix-blend-multiply [filter:brightness(0)] dark:opacity-[0.2] dark:mix-blend-screen dark:[filter:none]"
         />
       </motion.div>
 
+      {/* Bottom scrim — fades to the card's own ground colour so the title and
+          tag read on a clean, near-solid base instead of fighting the watermark.
+          Theme-aware: cream in light, obsidian in dark. Sits above the watermark,
+          below the text. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[64%] bg-gradient-to-t from-[#ece5d6] via-[#ece5d6]/85 to-transparent dark:from-[#0a0a0a] dark:via-[#0a0a0a]/88"
+      />
+
       {/* Editorial text — bottom-left corner */}
       {label && (
-        <div className="absolute bottom-0 left-0 p-7 text-left sm:p-8">
+        <div className="absolute bottom-0 left-0 z-10 p-7 text-left sm:p-8">
           <h3 className="font-display text-3xl font-bold leading-[0.95] text-ink sm:text-[2.6rem]">
             {label}
           </h3>

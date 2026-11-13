@@ -349,17 +349,15 @@
     animation: wordmark-type-glow 4s ease-in-out infinite;
     will-change: filter;
   }
-  /* Her signature "VA" ligature — pixel-traced from the original logo (the V's
-     swash overlapping the A exactly as she drew it) and recoloured with
-     currentColor so it flips white/black with the theme like the Bodoni "ULT"
-     beside it. Sized in em so it tracks every nav size; the curl and vertices
-     hang just below the baseline like the original dropped display capitals. */
-  .logo-va {
+  /* The whole wordmark is traced from the client's own logo — "VAULT" and "876"
+     are alpha masks of her exact lettering, recoloured with background-color so
+     "VAULT" flips white/black with the theme (currentColor) and "876" is gold.
+     Both masks are cut from one shared baseline window, so sizing them to the
+     same em height keeps their baselines locked and the V-swash dropping below
+     the digits exactly as drawn. Sized in em so the lockup tracks every nav size. */
+  .logo-word {
     display: inline-block;
-    height: 0.8em;
-    aspect-ratio: 1.3118;
-    margin-right: 0.03em;
-    vertical-align: -0.05em;
+    height: 0.82em;
     background-color: currentColor;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
@@ -367,6 +365,13 @@
     mask-position: center;
     -webkit-mask-size: contain;
     mask-size: contain;
+  }
+  .logo-word--gold {
+    background-color: #d4af37;
+    transition: background-color 0.3s ease;
+  }
+  .group:hover .logo-word--gold {
+    background-color: #e7cc6e;
   }
   @keyframes wordmark-coin-glow {
     0%, 100% {

@@ -24,8 +24,6 @@ export default {
       fontFamily: {
         // Warm high-contrast display serif + heavy poster sans + clean UI sans
         display: ['"Playfair Display"', 'Georgia', 'serif'],
-        // Didone lockup face — a tight, extreme-contrast clone of the VAULT 876 logo
-        logo: ['"Bodoni Moda"', '"Playfair Display"', 'Georgia', 'serif'],
         accent: ['Montserrat', 'Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
