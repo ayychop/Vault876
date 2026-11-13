@@ -2,12 +2,19 @@ import logoUrl from '../assets/vault-logo-final.png'
 
 // The full VAULT 876 crest lockup — gold tools + wordmark on transparency.
 // `size` is the rendered HEIGHT in px; the width scales with the artwork.
-// `glow` adds a soft gold aura + drop-shadow behind the mark.
-export default function BrandMark({ size = 40, glow = false, className = '' }) {
+// `glow`  adds a soft gold aura + drop-shadow behind the mark.
+// `badge` gives the transparent crest a solid Obsidian backing + hairline gold
+//         border in LIGHT mode (where the gold/white artwork would wash out on
+//         the light canvas); in DARK mode it stays transparent on the dark page.
+export default function BrandMark({ size = 40, glow = false, badge = false, className = '' }) {
   return (
     <span
-      className={`relative inline-flex shrink-0 items-center justify-center ${className}`}
-      style={{ height: size }}
+      className={`relative inline-flex shrink-0 items-center justify-center ${
+        badge
+          ? 'rounded-[1.4rem] px-7 py-5 ring-1 ring-gold/30 bg-[#0A0A0A] dark:bg-transparent dark:ring-0'
+          : ''
+      } ${className}`}
+      style={{ height: badge ? size + 40 : size }}
     >
       {glow && (
         <span
@@ -27,8 +34,9 @@ export default function BrandMark({ size = 40, glow = false, className = '' }) {
         loading="eager"
         decoding="async"
         fetchpriority="high"
-        className="relative h-full w-auto select-none object-contain"
+        className="relative w-auto select-none object-contain"
         style={{
+          height: size,
           // Reserve width up front (crest is 4:3) so it never shifts layout or pops in.
           aspectRatio: '4 / 3',
           ...(glow

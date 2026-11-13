@@ -50,7 +50,7 @@ export default function Footer() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="hidden lg:block">
-            <BrandMark size={150} glow />
+            <BrandMark size={128} glow badge />
           </motion.div>
         </motion.div>
 

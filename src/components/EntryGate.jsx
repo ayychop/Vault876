@@ -49,20 +49,39 @@ export default function EntryGate() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-canvas"
+          role="button"
+          tabIndex={0}
+          onClick={enter}
+          onKeyDown={onKey}
+          aria-label="Enter the Vault — press anywhere to open the site"
+          className="group fixed inset-0 z-[100] flex cursor-pointer flex-col items-center justify-center overflow-hidden outline-none"
+          // Always obsidian, independent of light/dark theme, so the gold crest
+          // and glow never wash out and no light flash leaks through on exit.
+          style={{ backgroundColor: '#0A0A0A' }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.12, filter: 'blur(6px)' }}
           transition={{ duration: 0.95, ease: EASE }}
         >
-          {/* ---- Continuous premium glow stack, all centred behind the crest ---- */}
+          {/* Soft obsidian vignette for depth */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(130% 110% at 50% 46%, transparent 42%, rgba(0,0,0,0.55) 100%)',
+            }}
+          />
+
+          {/* ---- Continuous premium glow stack, centred ON the crest (the logo
+                  sits ~4vh above viewport centre, so the whole stack is lifted
+                  to match — keeping all the energy behind the mark). ---- */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 flex -translate-y-[4vh] items-center justify-center"
           >
-            {/* 1. Slow-rotating conic gold halo — a living, shifting glow that
-                   never fully resolves into a ring (heavy blur keeps it soft). */}
+            {/* 1. Slow-rotating conic gold halo — a living, shifting glow. */}
             <motion.div
-              className="absolute h-[86vmin] w-[86vmin] rounded-full"
+              className="absolute h-[92vmin] w-[92vmin] rounded-full"
               style={{
                 background:
                   'conic-gradient(from 0deg, rgba(212,175,55,0) 0deg, rgba(212,175,55,0.20) 65deg, rgba(231,204,110,0.34) 135deg, rgba(212,175,55,0.10) 215deg, rgba(212,175,55,0) 320deg)',
@@ -75,7 +94,7 @@ export default function EntryGate() {
             />
             {/* 2. Counter-rotating softer halo for depth — slower, fainter. */}
             <motion.div
-              className="absolute h-[66vmin] w-[66vmin] rounded-full"
+              className="absolute h-[70vmin] w-[70vmin] rounded-full"
               style={{
                 background:
                   'conic-gradient(from 180deg, rgba(212,175,55,0) 0deg, rgba(231,204,110,0.22) 120deg, rgba(212,175,55,0) 260deg)',
@@ -88,7 +107,7 @@ export default function EntryGate() {
             />
             {/* 3. Core radial bloom — strong, soft, breathing. */}
             <motion.div
-              className="absolute h-[58vmin] w-[58vmin] rounded-full"
+              className="absolute h-[62vmin] w-[62vmin] rounded-full"
               style={{
                 background:
                   'radial-gradient(circle, rgba(212,175,55,0.30) 0%, rgba(212,175,55,0.08) 42%, transparent 70%)',
@@ -100,16 +119,16 @@ export default function EntryGate() {
               }
               transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
             />
-            {/* 4. Radiating energy pulses — slim gold rings that bloom outward
-                   from the crest and fade, giving a sleek, alive premium charge. */}
+            {/* 4. Radiating energy pulses — larger, slim gold rings blooming
+                   outward from the crest so the energy stays centred on it. */}
             {!reduce &&
               [0, 1, 2].map((n) => (
                 <motion.div
                   key={n}
-                  className="absolute h-[40vmin] w-[40vmin] rounded-full border border-gold/30"
+                  className="absolute h-[56vmin] w-[56vmin] rounded-full border border-gold/30"
                   style={{ willChange: 'transform, opacity' }}
-                  initial={{ scale: 0.65, opacity: 0 }}
-                  animate={{ scale: [0.65, 1.7], opacity: [0, 0.45, 0] }}
+                  initial={{ scale: 0.55, opacity: 0 }}
+                  animate={{ scale: [0.55, 1.75], opacity: [0, 0.5, 0] }}
                   transition={{
                     duration: 6,
                     ease: 'easeOut',
@@ -120,19 +139,13 @@ export default function EntryGate() {
               ))}
           </div>
 
-          {/* Full crest lockup — the entry button, with its own continuous,
-              breathing gold glow so it reads as lit from within. */}
-          <motion.button
-            type="button"
-            onClick={enter}
-            onKeyDown={onKey}
-            aria-label="Enter the Vault — open the site"
-            className="relative mb-[8vh] rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-8 focus-visible:ring-offset-canvas"
+          {/* Full crest lockup, with its own continuous breathing gold glow so it
+              reads as lit from within. Visual only — the whole gate is the button. */}
+          <motion.div
+            className="relative mb-[8vh]"
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.1, ease: EASE }}
-            whileHover={{ scale: 1.025 }}
-            whileTap={{ scale: 0.985 }}
           >
             <motion.img
               src={logoFull}
@@ -142,7 +155,7 @@ export default function EntryGate() {
               decoding="async"
               fetchpriority="high"
               style={{ willChange: 'transform, filter' }}
-              className="w-[min(80vw,580px)] select-none"
+              className="w-[min(80vw,580px)] select-none transition-transform duration-500 ease-luxe group-hover:scale-[1.025]"
               animate={
                 reduce
                   ? { filter: 'drop-shadow(0 0 48px rgba(212,175,55,0.4))' }
@@ -157,31 +170,34 @@ export default function EntryGate() {
               }
               transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
             />
-          </motion.button>
+          </motion.div>
 
-          {/* Enter prompt — sleek, wide-tracked couture caps */}
-          <motion.button
-            type="button"
-            onClick={enter}
-            onKeyDown={onKey}
+          {/* Enter prompt — sleek, wide-tracked couture caps + an instruction line */}
+          <motion.div
             aria-hidden
-            tabIndex={-1}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.9, ease: EASE }}
-            className="group absolute bottom-[11vh] flex flex-col items-center gap-3 outline-none"
+            className="absolute bottom-[10vh] flex flex-col items-center gap-4"
           >
             <motion.span
-              className="pl-[0.42em] font-sans text-[0.95rem] font-normal uppercase text-ink/90 sm:text-base"
+              className="pl-[0.42em] font-sans text-[1.05rem] font-normal uppercase text-white/90 sm:text-[1.2rem]"
               style={{ letterSpacing: '0.42em' }}
-              animate={reduce ? {} : { opacity: [0.7, 1, 0.7] }}
+              animate={reduce ? {} : { opacity: [0.72, 1, 0.72] }}
               transition={{ duration: 2.8, ease: 'easeInOut', repeat: Infinity }}
             >
               Enter the Vault
             </motion.span>
-            {/* thin gold underline that breathes with the prompt */}
-            <span className="h-px w-14 bg-gradient-to-r from-transparent via-gold to-transparent" />
-          </motion.button>
+            {/* thin gold underline */}
+            <span className="h-px w-16 bg-gradient-to-r from-transparent via-gold to-transparent" />
+            {/* instruction — the whole screen is the key */}
+            <span
+              className="pl-[0.34em] font-sans text-[0.62rem] font-medium uppercase text-white/45 sm:text-[0.68rem]"
+              style={{ letterSpacing: '0.34em' }}
+            >
+              Press anywhere to enter
+            </span>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
