@@ -44,6 +44,7 @@ export default function Gallery() {
               className={`group relative ${w.span}`}
             >
               <ImagePlaceholder
+                plaque
                 label={w.label}
                 logoSize={w.logo}
                 className="h-full w-full rounded-2xl transition-transform duration-700 ease-luxe group-hover:scale-[1.015]"
