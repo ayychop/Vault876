@@ -2,10 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-// Dev (and the Codespaces preview) serve from root "/"; the production build is
-// based at "/Vault876/" so it works as a GitHub Pages project site.
+// Base path by target:
+//   - dev / Codespaces preview .......... "/"            (served at root)
+//   - Vercel build (VERCEL=1) ........... "/"            (served at its own domain root, SPA rewrites in vercel.json)
+//   - GitHub Pages build ................ "/Vault876/"   (project-site sub-path)
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/Vault876/' : '/',
+  base: command === 'build' && !process.env.VERCEL ? '/Vault876/' : '/',
   plugins: [react()],
   server: {
     host: true,
