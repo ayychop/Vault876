@@ -40,8 +40,8 @@ export default function Contact() {
             className="relative min-h-[22rem] lg:min-h-[32rem]"
           >
             <ImagePlaceholder
+              plaque
               className="h-full w-full rounded-2xl"
-              logoSize={168}
               label="The Studio"
               caption="Where the work happens."
             />

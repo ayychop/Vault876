@@ -9,30 +9,9 @@ import emblem from '../assets/crest-emblem-square.png'
 //   line 1  — "VAULT 876" in heavy Playfair Display caps ("876" gold)
 //   line 2  — "HAIR & BEAUTY" in tiny ultra-wide sans caps + a gold hairline.
 const sizes = {
-  sm: {
-    main: 'text-[1.15rem]',
-    sub: 'text-[0.42rem]',
-    gap: 'mt-[3px]',
-    coin: 'h-10 w-10',
-    pad: 'p-[5px]',
-    ring: 'gap-2.5',
-  },
-  md: {
-    main: 'text-[1.4rem] sm:text-[1.6rem]',
-    sub: 'text-[0.46rem] sm:text-[0.48rem]',
-    gap: 'mt-1',
-    coin: 'h-12 w-12',
-    pad: 'p-[6px]',
-    ring: 'gap-3',
-  },
-  lg: {
-    main: 'text-3xl',
-    sub: 'text-[0.55rem]',
-    gap: 'mt-1.5',
-    coin: 'h-14 w-14',
-    pad: 'p-[7px]',
-    ring: 'gap-3.5',
-  },
+  sm: { main: 'text-[1.15rem]', sub: 'text-[0.42rem]', gap: 'mt-[3px]', coin: 'h-10 w-10', ring: 'gap-2.5' },
+  md: { main: 'text-[1.4rem] sm:text-[1.6rem]', sub: 'text-[0.46rem] sm:text-[0.48rem]', gap: 'mt-1', coin: 'h-12 w-12', ring: 'gap-3' },
+  lg: { main: 'text-3xl', sub: 'text-[0.55rem]', gap: 'mt-1.5', coin: 'h-14 w-14', ring: 'gap-3.5' },
 }
 
 export default function Wordmark({ className = '', size = 'md', onClick }) {
@@ -45,9 +24,11 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
       aria-label="VAULT 876 — Hair & Beauty, home"
       className={`group inline-flex min-w-0 items-center ${s.ring} ${className}`}
     >
-      {/* Obsidian coin — fixed size, never crushed */}
+      {/* Obsidian coin — fixed size, never crushed. The crest is scaled to fill
+          the coin (transparent margins clipped) so it reads like a minted coin,
+          not a small sticker floating in a black circle. */}
       <span
-        className={`relative flex shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] ring-1 ring-gold/50 transition-[box-shadow,transform] duration-300 ease-luxe group-hover:ring-gold group-hover:shadow-[0_0_18px_rgba(212,175,55,0.35)] ${s.coin} ${s.pad}`}
+        className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#0A0A0A] ring-1 ring-gold/55 transition-[box-shadow,transform] duration-300 ease-luxe group-hover:ring-gold group-hover:shadow-[0_0_18px_rgba(212,175,55,0.4)] ${s.coin}`}
       >
         <img
           src={emblem}
@@ -56,7 +37,7 @@ export default function Wordmark({ className = '', size = 'md', onClick }) {
           draggable={false}
           loading="eager"
           decoding="async"
-          className="h-full w-full select-none object-contain"
+          className="h-full w-full scale-[1.5] select-none object-contain"
         />
       </span>
 
