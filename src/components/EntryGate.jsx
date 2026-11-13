@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import logoFull from '../assets/vault-logo-final.png'
 
@@ -14,17 +15,19 @@ function hasEntered() {
 }
 
 export default function EntryGate() {
-  // Show on the first visit of the session only.
+  // Show on the first visit of the session only — and never over the owner portal.
   const [open, setOpen] = useState(() => !hasEntered())
   const reduce = useReducedMotion()
+  const { pathname } = useLocation()
+  const visible = open && !pathname.startsWith('/admin')
 
-  // Lock scroll beneath the gate while it is open.
+  // Lock scroll beneath the gate while it is showing.
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
+    document.body.style.overflow = visible ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [open])
+  }, [visible])
 
   const enter = () => {
     try {
@@ -44,7 +47,7 @@ export default function EntryGate() {
 
   return (
     <AnimatePresence>
-      {open && (
+      {visible && (
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-canvas"
           initial={{ opacity: 1 }}
@@ -97,6 +100,24 @@ export default function EntryGate() {
               }
               transition={{ duration: 4, ease: 'easeInOut', repeat: Infinity }}
             />
+            {/* 4. Radiating energy pulses — slim gold rings that bloom outward
+                   from the crest and fade, giving a sleek, alive premium charge. */}
+            {!reduce &&
+              [0, 1, 2].map((n) => (
+                <motion.div
+                  key={n}
+                  className="absolute h-[40vmin] w-[40vmin] rounded-full border border-gold/30"
+                  style={{ willChange: 'transform, opacity' }}
+                  initial={{ scale: 0.65, opacity: 0 }}
+                  animate={{ scale: [0.65, 1.7], opacity: [0, 0.45, 0] }}
+                  transition={{
+                    duration: 6,
+                    ease: 'easeOut',
+                    repeat: Infinity,
+                    delay: n * 2,
+                  }}
+                />
+              ))}
           </div>
 
           {/* Full crest lockup — the entry button, with its own continuous,
@@ -151,15 +172,15 @@ export default function EntryGate() {
             className="group absolute bottom-[11vh] flex flex-col items-center gap-3 outline-none"
           >
             <motion.span
-              className="pl-[0.5em] font-sans text-[0.8rem] font-light uppercase text-ink/90"
-              style={{ letterSpacing: '0.5em' }}
-              animate={reduce ? {} : { opacity: [0.65, 1, 0.65] }}
+              className="pl-[0.42em] font-sans text-[0.95rem] font-normal uppercase text-ink/90 sm:text-base"
+              style={{ letterSpacing: '0.42em' }}
+              animate={reduce ? {} : { opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2.8, ease: 'easeInOut', repeat: Infinity }}
             >
               Enter the Vault
             </motion.span>
             {/* thin gold underline that breathes with the prompt */}
-            <span className="h-px w-10 bg-gradient-to-r from-transparent via-gold to-transparent" />
+            <span className="h-px w-14 bg-gradient-to-r from-transparent via-gold to-transparent" />
           </motion.button>
         </motion.div>
       )}

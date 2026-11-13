@@ -9,7 +9,8 @@ const EASE = [0.16, 1, 0.3, 1]
 // persistent Book Now, so no floating duplicate is needed here.
 export default function BookNow() {
   const { pathname } = useLocation()
-  const show = pathname !== '/booking'
+  // Public CTA only — hidden on the booking flow and the owner admin portal.
+  const show = pathname !== '/booking' && !pathname.startsWith('/admin')
 
   return (
     <AnimatePresence>

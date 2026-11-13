@@ -15,14 +15,14 @@ const work = [
 
 export default function Gallery() {
   return (
-    <section id="work" className="scroll-mt-20 bg-canvas py-28 sm:py-36">
+    <section id="work" className="scroll-mt-20 bg-canvas py-16 sm:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={inView}
           transition={{ duration: 0.9, ease: EASE }}
-          className="mb-16 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
+          className="mb-10 flex flex-col gap-5 sm:mb-16 md:flex-row md:items-end md:justify-between"
         >
           <h2 className="display-lg font-display font-black text-ink">
             The <span className="italic font-medium">Work</span>

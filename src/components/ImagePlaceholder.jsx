@@ -36,7 +36,14 @@ export default function ImagePlaceholder({
         <BrandMark
           size={logoSize}
           glow={!watermark}
-          className={watermark ? 'opacity-[0.16]' : ''}
+          // Watermark is theme-aware: a faint obsidian silhouette on white
+          // (gold washes out there), and a slightly boosted gold crest on
+          // obsidian — so it reads as intentional in both modes.
+          className={
+            watermark
+              ? 'opacity-[0.07] [filter:brightness(0)] dark:opacity-[0.24] dark:[filter:none]'
+              : ''
+          }
         />
       </div>
 

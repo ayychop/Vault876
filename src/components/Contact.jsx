@@ -6,14 +6,14 @@ import ImagePlaceholder from './ImagePlaceholder.jsx'
 
 export default function Contact() {
   return (
-    <section id="contact" className="scroll-mt-20 bg-canvas py-28 sm:py-36">
+    <section id="contact" className="scroll-mt-20 bg-canvas py-16 sm:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <motion.div
           variants={stagger(0.12)}
           initial="hidden"
           whileInView="show"
           viewport={inView}
-          className="mb-16 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
+          className="mb-10 flex flex-col gap-5 sm:mb-16 md:flex-row md:items-end md:justify-between"
         >
           <motion.h2
             variants={fadeUp}

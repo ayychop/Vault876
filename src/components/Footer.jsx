@@ -22,7 +22,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-ink/10 bg-canvas">
       {/* CTA band */}
-      <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-28">
         <motion.div
           variants={stagger(0.12)}
           initial="hidden"
@@ -117,7 +117,16 @@ export default function Footer() {
       {/* Baseline */}
       <div className="border-t border-ink/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-sm text-ink/40 sm:flex-row sm:px-8">
-          <p>© {new Date().getFullYear()} VAULT 876 — Hair &amp; Beauty</p>
+          <p className="flex items-center gap-2">
+            © {new Date().getFullYear()} VAULT 876 — Hair &amp; Beauty
+            <span aria-hidden className="text-ink/20">·</span>
+            <Link
+              to="/admin"
+              className="text-ink/40 underline-offset-2 transition-colors hover:text-gold hover:underline"
+            >
+              Owner Portal
+            </Link>
+          </p>
           <p className="order-first font-sans text-[0.68rem] uppercase tracking-[0.3em] text-ink/55 sm:order-none">
             Unapologetically luxurious. Expertly crafted.
           </p>

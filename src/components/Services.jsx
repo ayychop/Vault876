@@ -6,7 +6,7 @@ import { IconArrowUpRight } from './icons.jsx'
 
 export default function Services() {
   return (
-    <section id="services" className="scroll-mt-20 bg-canvas pb-28 pt-4 sm:pb-36">
+    <section id="services" className="scroll-mt-20 bg-canvas pb-16 pt-2 sm:pb-36 sm:pt-4">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <motion.div
           variants={stagger(0.12)}
