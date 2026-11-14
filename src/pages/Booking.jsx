@@ -128,6 +128,9 @@ export default function Booking() {
     setSubmitting(true)
     const { error: insertError } = await supabase.from('bookings').insert(rows)
     if (insertError) {
+      // Surface the real Postgres error (code + message) so a failure is
+      // diagnosable from the browser console instead of just the generic copy.
+      console.error('[booking] insert failed:', insertError)
       setSubmitting(false)
       setError(
         'We couldn’t save your booking just now. Please try again, or call the salon and we’ll sort it.',
