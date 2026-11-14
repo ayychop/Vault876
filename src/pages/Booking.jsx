@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, ChevronLeft, Camera } from 'lucide-react'
-import { services, gbp } from '../lib/services.js'
+import { gbp } from '../lib/services.js'
+import { useServices } from '../lib/content.js'
 import { site } from '../lib/site.js'
 import { supabase } from '../lib/supabase.js'
 import Wordmark from '../components/Wordmark.jsx'
+import GoodToKnow from '../components/GoodToKnow.jsx'
 
 const EASE = [0.16, 1, 0.3, 1]
 const STEPS = [
@@ -39,9 +41,10 @@ export default function Booking() {
   const preset = params.get('service')
   const cancelled = params.get('cancelled') // returned from an abandoned Stripe checkout
 
+  const services = useServices()
   const [step, setStep] = useState(1)
   const [picked, setPicked] = useState(() =>
-    preset && services.some((s) => s.slug === preset) ? [preset] : [],
+    preset ? [preset] : [],
   )
   const [date, setDate] = useState(null)
   const [time, setTime] = useState(null)
@@ -55,8 +58,14 @@ export default function Booking() {
   const days = useMemo(() => upcomingDays(), [])
   const total = useMemo(
     () => picked.reduce((sum, slug) => sum + (services.find((s) => s.slug === slug)?.price || 0), 0),
-    [picked],
+    [picked, services],
   )
+
+  // Drop any pre-selected service that isn't a real, active menu item (e.g. a
+  // stale ?service= link) once the live menu has loaded.
+  useEffect(() => {
+    setPicked((p) => p.filter((slug) => services.some((s) => s.slug === slug)))
+  }, [services])
 
   const toggle = (slug) =>
     setPicked((p) => {
@@ -212,7 +221,7 @@ export default function Booking() {
           </div>
         )}
         {done ? (
-          <Confirmation picked={picked} date={date} time={time} fmtDay={fmtDay} styleBySlug={styleBySlug} />
+          <Confirmation picked={picked} date={date} time={time} fmtDay={fmtDay} styleBySlug={styleBySlug} services={services} />
         ) : (
           <AnimatePresence mode="wait">
             <motion.div
@@ -481,6 +490,10 @@ export default function Booking() {
                       })}
                     </div>
                   </div>
+
+                  {/* The salon's own deposit / cancellation wording, editable
+                      from the owner portal. */}
+                  <GoodToKnow compact className="mt-12" only={['deposit', 'cancellation']} />
                 </>
               )}
             </motion.div>
@@ -541,7 +554,7 @@ function Field({ label, value, onChange, placeholder, type = 'text' }) {
   )
 }
 
-function Confirmation({ picked, date, time, fmtDay, styleBySlug = {} }) {
+function Confirmation({ picked, date, time, fmtDay, styleBySlug = {}, services = [] }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}

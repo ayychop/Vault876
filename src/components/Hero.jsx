@@ -5,6 +5,8 @@ import { site } from '../lib/site.js'
 import { IconPhone } from './icons.jsx'
 import watermarkArt from '../assets/crest-emblem.png'
 import MagneticButton from './MagneticButton.jsx'
+import { useSiteMedia } from '../lib/content.js'
+import { buildFilterCss } from '../lib/imageFilters.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -37,6 +39,9 @@ function Word({ children, className = '' }) {
 export default function Hero() {
   const ref = useRef(null)
   const reduce = useReducedMotion()
+  const siteMedia = useSiteMedia()
+  const hero = siteMedia.hero // { url, type, filters } once the owner uploads one
+  const heroFilter = hero ? buildFilterCss(hero.filters) : ''
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
@@ -52,27 +57,69 @@ export default function Hero() {
       ref={ref}
       className="relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-canvas"
     >
-      {/* Oversized crest watermark — a huge, faint texture pushed far behind the
-          headline (not a competing element). Theme-aware via CSS filter only:
-          a subtle DARK GHOST on the light ground, a boosted GOLD mark on the
-          obsidian ground. */}
-      <motion.div
-        initial={{ scale: 1.14, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.8, ease: EASE }}
-        style={reduce ? { willChange: 'transform' } : { y: imgY, scale: imgScale, willChange: 'transform' }}
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-        aria-hidden
-      >
-        <img
-          src={watermarkArt}
-          alt=""
-          draggable={false}
-          loading="eager"
-          decoding="async"
-          className="w-[150vw] max-w-[1300px] select-none object-contain opacity-[0.08] [filter:brightness(0)] dark:opacity-[0.16] dark:[filter:none] sm:w-[95vw]"
+      {/* Owner's hero photo/video, full-bleed, once she's uploaded one — it sits
+          behind the headline with a parallax drift, and the grade/vignette below
+          keep the type readable. Falls back to the crest watermark when empty. */}
+      {hero ? (
+        <motion.div
+          initial={{ scale: 1.12, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.8, ease: EASE }}
+          style={reduce ? { willChange: 'transform' } : { y: imgY, scale: imgScale, willChange: 'transform' }}
+          className="pointer-events-none absolute inset-0"
+          aria-hidden
+        >
+          {hero.type === 'video' ? (
+            <video
+              src={hero.url}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-full w-full object-cover"
+              style={heroFilter ? { filter: heroFilter } : undefined}
+            />
+          ) : (
+            <img
+              src={hero.url}
+              alt=""
+              draggable={false}
+              className="h-full w-full select-none object-cover"
+              style={heroFilter ? { filter: heroFilter } : undefined}
+            />
+          )}
+        </motion.div>
+      ) : (
+        /* Oversized crest watermark — a huge, faint texture pushed far behind the
+           headline. Theme-aware via CSS filter: a subtle DARK GHOST on the light
+           ground, a boosted GOLD mark on the obsidian ground. */
+        <motion.div
+          initial={{ scale: 1.14, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.8, ease: EASE }}
+          style={reduce ? { willChange: 'transform' } : { y: imgY, scale: imgScale, willChange: 'transform' }}
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          aria-hidden
+        >
+          <img
+            src={watermarkArt}
+            alt=""
+            draggable={false}
+            loading="eager"
+            decoding="async"
+            className="w-[150vw] max-w-[1300px] select-none object-contain opacity-[0.08] [filter:brightness(0)] dark:opacity-[0.16] dark:[filter:none] sm:w-[95vw]"
+          />
+        </motion.div>
+      )}
+
+      {/* When a photo is present, deepen the scrim so the white headline holds
+          against any image — in both themes. */}
+      {hero && (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/45"
         />
-      </motion.div>
+      )}
 
       {/* Cinematic grade — theme-aware vignette that keeps the headline readable
           on both the obsidian (dark) and crisp-white (light) grounds. */}
@@ -88,7 +135,9 @@ export default function Hero() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="font-display font-black leading-[0.88] tracking-[-0.05em] text-ink"
+          className={`font-display font-black leading-[0.88] tracking-[-0.05em] ${
+            hero ? 'text-white' : 'text-ink'
+          }`}
           style={{ fontSize: 'clamp(3.25rem, 10vw, 8.5rem)' }}
         >
           <span className="block">
@@ -109,7 +158,9 @@ export default function Hero() {
           initial="hidden"
           animate="show"
           transition={{ delay: 1.1 }}
-          className="mt-10 max-w-md font-sans text-[0.78rem] font-normal uppercase tracking-[0.42em] text-ink/90 dark:font-light dark:text-ink/65"
+          className={`mt-10 max-w-md font-sans text-[0.78rem] font-normal uppercase tracking-[0.42em] ${
+            hero ? 'text-white/85' : 'text-ink/90 dark:font-light dark:text-ink/65'
+          }`}
         >
           Luxury hair &amp; beauty — {site.address.city}
         </motion.p>
@@ -130,7 +181,11 @@ export default function Hero() {
           </MagneticButton>
           <a
             href={site.phoneHref}
-            className="inline-flex items-center gap-2 rounded-full border border-ink/25 px-7 py-4 text-sm font-medium text-ink/90 backdrop-blur-sm transition-all duration-500 ease-luxe hover:scale-[1.03] hover:border-gold/70 hover:text-ink hover:shadow-[0_18px_50px_-18px_rgba(212,175,55,0.55)]"
+            className={`inline-flex items-center gap-2 rounded-full border px-7 py-4 text-sm font-medium backdrop-blur-sm transition-all duration-500 ease-luxe hover:scale-[1.03] hover:border-gold/70 hover:shadow-[0_18px_50px_-18px_rgba(212,175,55,0.55)] ${
+              hero
+                ? 'border-white/40 text-white hover:text-white'
+                : 'border-ink/25 text-ink/90 hover:text-ink'
+            }`}
           >
             <IconPhone className="h-[1.05rem] w-[1.05rem]" />
             Call Salon

@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { services, gbp } from '../lib/services.js'
+import { gbp } from '../lib/services.js'
+import { useServices } from '../lib/content.js'
 import { fadeUp, stagger, inView } from '../lib/motion.js'
 import { IconArrowUpRight } from './icons.jsx'
 
 export default function Services() {
+  const services = useServices()
   return (
     <section id="services" className="scroll-mt-20 bg-canvas pb-16 pt-2 sm:pb-36 sm:pt-4">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">

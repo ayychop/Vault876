@@ -1,19 +1,23 @@
 import { motion } from 'framer-motion'
 import { inView } from '../lib/motion.js'
 import ImagePlaceholder from './ImagePlaceholder.jsx'
+import { useSiteMedia } from '../lib/content.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
-// Branded placeholders until the salon's own editorial shoot lands.
+// Branded placeholders until the salon's own editorial shoot lands. Each figure
+// maps to an editable panel (see src/lib/panels.js) the owner can fill from the
+// /admin "Edit Website" flow.
 const work = [
-  { label: 'Braid extensions', span: 'aspect-[3/4]', logo: 112 },
-  { label: 'Extensions', span: 'aspect-[3/4]', logo: 112 },
-  { label: 'The Space', span: 'aspect-[3/4]', logo: 112 },
-  { label: 'Length & Finish', span: 'aspect-[16/10] lg:col-span-2', logo: 132 },
-  { label: 'Locs & Styling', span: 'aspect-[16/10] lg:aspect-[3/4]', logo: 112 },
+  { id: 'work_1', label: 'Braid extensions', span: 'aspect-[3/4]', logo: 112 },
+  { id: 'work_2', label: 'Extensions', span: 'aspect-[3/4]', logo: 112 },
+  { id: 'work_3', label: 'The Space', span: 'aspect-[3/4]', logo: 112 },
+  { id: 'work_4', label: 'Length & Finish', span: 'aspect-[16/10] lg:col-span-2', logo: 132 },
+  { id: 'work_5', label: 'Locs & Styling', span: 'aspect-[16/10] lg:aspect-[3/4]', logo: 112 },
 ]
 
 export default function Gallery() {
+  const media = useSiteMedia()
   return (
     <section id="work" className="scroll-mt-20 bg-canvas py-16 sm:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -46,6 +50,7 @@ export default function Gallery() {
               <ImagePlaceholder
                 label={w.label}
                 tag="Portfolio pending"
+                media={media[w.id]}
                 className="h-full w-full rounded-2xl transition-transform duration-700 ease-luxe group-hover:scale-[1.015]"
               />
               <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 transition-all duration-500 group-hover:ring-gold/40" />

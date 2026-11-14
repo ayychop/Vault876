@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Search, Download, Printer, ArrowLeft, RefreshCw, LogOut } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Download, Printer, ArrowLeft, RefreshCw, LogOut, Wand2, ArrowRight } from 'lucide-react'
 import Wordmark from '../components/Wordmark.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import AdminLogin from '../components/AdminLogin.jsx'
 import { bookings as demoBookings } from '../lib/adminData.js'
 import { supabase } from '../lib/supabase.js'
+
+// The website editor (and its image-cropping dependency) only ever runs here in
+// the owner portal, so load it on demand to keep the public site's bundle light.
+const EditWebsite = lazy(() => import('../components/admin/EditWebsite.jsx'))
 
 // Map a live Supabase bookings row into the shape the dashboard renders.
 const mapRow = (r) => ({
@@ -61,6 +65,7 @@ export default function Admin() {
   const [loadError, setLoadError] = useState('')
   const [session, setSession] = useState(null)
   const [authReady, setAuthReady] = useState(false)
+  const [editing, setEditing] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -367,6 +372,34 @@ export default function Admin() {
           </div>
         </motion.div>
 
+        {/* Edit Website — the owner's self-service content manager */}
+        {supabase && (
+          <motion.button
+            type="button"
+            onClick={() => setEditing(true)}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
+            className="group relative mt-8 flex w-full items-center justify-between gap-5 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-gold/[0.12] via-gold/[0.05] to-transparent p-6 text-left transition-all duration-500 ease-luxe hover:border-gold/60 hover:shadow-[0_30px_80px_-40px_rgba(212,175,55,0.7)] sm:p-8"
+          >
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/15 blur-3xl transition-opacity duration-500 group-hover:opacity-80" />
+            <div className="flex items-center gap-5">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gold text-obsidian shadow-lg transition-transform duration-500 group-hover:scale-105 sm:h-16 sm:w-16">
+                <Wand2 className="h-7 w-7" />
+              </span>
+              <div>
+                <div className="font-display text-2xl font-black tracking-[-0.02em] text-ink sm:text-3xl">
+                  Edit Website
+                </div>
+                <p className="mt-1 max-w-md text-sm text-ink/55">
+                  Update your photos & video, change your prices, and edit your policies — live, in minutes.
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="hidden h-6 w-6 shrink-0 text-gold transition-transform duration-500 group-hover:translate-x-1 sm:block" />
+          </motion.button>
+        )}
+
         {/* KPI cards */}
         <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {kpiCards.map((k, i) => (
@@ -532,6 +565,25 @@ export default function Admin() {
           </section>
         )}
       </main>
+
+      <AnimatePresence>
+        {editing && (
+          <Suspense
+            fallback={
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-canvas text-ink/40">
+                <RefreshCw className="h-6 w-6 animate-spin" />
+              </div>
+            }
+          >
+            <EditWebsite
+              onClose={() => {
+                setEditing(false)
+                load() // reflect any menu edits in the dashboard's service list
+              }}
+            />
+          </Suspense>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

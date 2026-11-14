@@ -42,17 +42,36 @@ Deno.serve(async (req) => {
 
     const { data: rows, error } = await admin
       .from('bookings')
-      .select('id, client_email, deposit_paid, price')
+      .select('id, client_email, deposit_paid, price, service_slug')
       .eq('booking_group', booking_group)
     if (error) throw error
     if (!rows || rows.length === 0) return json({ error: 'Booking not found' }, 404)
     if (rows.some((r) => r.deposit_paid)) return json({ error: 'Already paid' }, 409)
 
     // The amount is decided on the server, never from the client. For a full
-    // payment it's the sum of the group's own service prices (GBP → pence).
-    const fullPence = Math.round(
-      rows.reduce((sum, r) => sum + (Number(r.price) || 0), 0) * 100,
-    )
+    // payment we price from the AUTHORITATIVE `services` table (keyed by each
+    // row's service_slug) — the same table the website menu reads — so Stripe
+    // always charges the owner's current price and a tampered client-side price
+    // can't take effect. If a slug is missing from the menu we fall back to the
+    // price snapshot stored on the row.
+    const slugs = [...new Set(rows.map((r) => r.service_slug).filter(Boolean))]
+    const priceBySlug: Record<string, number> = {}
+    if (slugs.length) {
+      const { data: svc, error: svcErr } = await admin
+        .from('services')
+        .select('slug, price')
+        .in('slug', slugs)
+      if (svcErr) throw svcErr
+      for (const s of svc ?? []) priceBySlug[s.slug] = Number(s.price) || 0
+    }
+    const fullGbp = rows.reduce((sum, r) => {
+      const authoritative =
+        r.service_slug && priceBySlug[r.service_slug] != null
+          ? priceBySlug[r.service_slug]
+          : Number(r.price) || 0
+      return sum + authoritative
+    }, 0)
+    const fullPence = Math.round(fullGbp * 100)
     const isFull = paymentType === 'full'
     if (isFull && fullPence < DEPOSIT_PENCE) {
       // A full total below the deposit would be nonsensical — never happens with

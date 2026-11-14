@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import logoUrl from '../assets/vault-logo-final.png'
+import { buildFilterCss } from '../lib/imageFilters.js'
 
 // Cinematic "photography coming soon" slot — a seamless poster, not a boxed
 // plaque. A rich gradient ground, a massive crest watermark embossed into it
@@ -15,9 +16,59 @@ export default function ImagePlaceholder({
   className = '',
   label = null,
   tag = 'Coming soon',
+  media = null, // { url, type: 'image'|'video', filters } — set once the owner uploads
   children,
 }) {
   const reduce = useReducedMotion()
+
+  // Once the owner has placed her own photo/video here, show it full-bleed with
+  // her chosen look baked/applied, and a soft caption so the label still reads.
+  if (media?.url) {
+    const filter = buildFilterCss(media.filters)
+    return (
+      <div
+        role="img"
+        aria-label={label || 'VAULT 876'}
+        className={`relative overflow-hidden bg-obsidian ${className}`}
+      >
+        {media.type === 'video' ? (
+          <video
+            src={media.url}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+            style={filter ? { filter } : undefined}
+          />
+        ) : (
+          <img
+            src={media.url}
+            alt={label || ''}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="absolute inset-0 h-full w-full select-none object-cover"
+            style={filter ? { filter } : undefined}
+          />
+        )}
+        {label && (
+          <>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[48%] bg-gradient-to-t from-black/70 via-black/25 to-transparent"
+            />
+            <div className="absolute bottom-0 left-0 z-10 p-7 text-left sm:p-8">
+              <h3 className="font-display text-2xl font-bold leading-[0.95] text-white drop-shadow sm:text-3xl">
+                {label}
+              </h3>
+            </div>
+          </>
+        )}
+        {children}
+      </div>
+    )
+  }
 
   return (
     <div
