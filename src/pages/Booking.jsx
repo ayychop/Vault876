@@ -47,6 +47,7 @@ export default function Booking() {
   const [time, setTime] = useState(null)
   const [styleBySlug, setStyleBySlug] = useState({})
   const [details, setDetails] = useState({ name: '', phone: '', email: '', photo: '' })
+  const [paymentType, setPaymentType] = useState('deposit') // 'deposit' | 'full'
   const [done, setDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -131,13 +132,13 @@ export default function Booking() {
       names.length <= 1 ? names[0] || 'Appointment' : `${names[0]} +${names.length - 1} more`
 
     const { data, error: fnError } = await supabase.functions.invoke('create-checkout-session', {
-      body: { booking_group: bookingGroup, service_name: serviceLabel },
+      body: { booking_group: bookingGroup, service_name: serviceLabel, payment_type: paymentType },
     })
     setSubmitting(false)
 
     if (fnError || !data?.url) {
       setError(
-        'Your booking is saved, but we couldn’t open secure checkout. Please call the salon to pay your £20 deposit and confirm.',
+        'Your booking is saved, but we couldn’t open secure checkout. Please call the salon to pay and confirm.',
       )
       return
     }
@@ -401,8 +402,8 @@ export default function Booking() {
                 <>
                   <h1 className="display-md font-display font-semibold text-ink">Your details</h1>
                   <p className="mt-3 text-ink/55">
-                    A <span className="text-gold">£20 deposit</span> secures your appointment — the
-                    balance is paid in the salon. You'll pay securely with Stripe on the next step.
+                    Choose how you'd like to pay below — you'll pay securely with Stripe on the
+                    next step.
                   </p>
                   <div className="mt-8 grid gap-4 sm:grid-cols-2">
                     <Field label="Full name *" value={details.name} onChange={(v) => setDetails({ ...details, name: v })} placeholder="Jane Doe" />
@@ -423,6 +424,62 @@ export default function Booking() {
                         />
                       </div>
                     </label>
+                  </div>
+
+                  {/* Payment choice — £20 deposit or the full booking now */}
+                  <div className="mt-10">
+                    <div className="label-caps mb-3 text-ink/40">How would you like to pay?</div>
+                    <div
+                      role="radiogroup"
+                      aria-label="Payment option"
+                      className="grid gap-3 sm:grid-cols-2"
+                    >
+                      {[
+                        {
+                          id: 'deposit',
+                          title: 'Pay £20 deposit',
+                          amount: gbp(20),
+                          note: 'Balance paid in the salon',
+                        },
+                        {
+                          id: 'full',
+                          title: 'Pay in full',
+                          amount: gbp(total),
+                          note: 'Nothing further to pay',
+                        },
+                      ].map((opt) => {
+                        const on = paymentType === opt.id
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            onClick={() => setPaymentType(opt.id)}
+                            className={`flex items-start justify-between gap-4 rounded-2xl border p-5 text-left transition-all duration-300 ease-luxe ${
+                              on
+                                ? 'border-gold bg-gold/[0.06]'
+                                : 'border-ink/12 bg-surface hover:border-gold/50'
+                            }`}
+                          >
+                            <span>
+                              <span className="block font-display text-lg text-ink">{opt.title}</span>
+                              <span className="mt-1 block text-sm text-ink/50">{opt.note}</span>
+                              <span className="mt-2 block font-display text-xl text-gold">
+                                {opt.amount}
+                              </span>
+                            </span>
+                            <span
+                              className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                                on ? 'border-gold bg-gold text-obsidian' : 'border-ink/30'
+                              }`}
+                            >
+                              {on && <Check className="h-3.5 w-3.5" />}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </>
               )}
@@ -458,7 +515,9 @@ export default function Booking() {
                 ? 'Continue'
                 : submitting
                   ? 'Opening secure checkout…'
-                  : 'Pay £20 deposit'}
+                  : paymentType === 'full'
+                    ? `Pay in full · ${gbp(total)}`
+                    : 'Pay £20 deposit'}
             </button>
           </div>
         </div>

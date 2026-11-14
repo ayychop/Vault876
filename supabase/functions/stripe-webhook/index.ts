@@ -51,6 +51,21 @@ Deno.serve(async (req) => {
         ? session.payment_intent
         : (session.payment_intent?.id ?? null)
 
+    // What Stripe actually captured. amount_total is in pence → store GBP.
+    const amountPaid =
+      typeof session.amount_total === 'number' ? session.amount_total / 100 : null
+    // Trust our own metadata first; fall back to the captured total (anything
+    // above the £20 deposit is a full payment).
+    const paymentType =
+      session.metadata?.payment_type === 'full'
+        ? 'full'
+        : session.metadata?.payment_type === 'deposit'
+          ? 'deposit'
+          : session.amount_total != null && session.amount_total > DEPOSIT_GBP * 100
+            ? 'full'
+            : 'deposit'
+    const paidInFull = paymentType === 'full'
+
     if (bookingGroup) {
       const admin = createClient(
         Deno.env.get('SUPABASE_URL') ?? '',
@@ -60,8 +75,10 @@ Deno.serve(async (req) => {
       const { data: confirmed, error } = await admin
         .from('bookings')
         .update({
-          deposit_paid: true,
+          deposit_paid: true, // the "payment captured" flag (deposit OR full)
           status: 'Confirmed',
+          payment_type: paymentType,
+          amount_paid: amountPaid,
           stripe_payment_intent_id: paymentIntentId,
           stripe_session_id: session.id,
           paid_at: new Date().toISOString(),
@@ -90,7 +107,8 @@ Deno.serve(async (req) => {
             price: Number(r.price) || 0,
           })),
           total: confirmed.reduce((sum, r) => sum + (Number(r.price) || 0), 0),
-          depositPaid: DEPOSIT_GBP,
+          amountPaid: amountPaid ?? (paidInFull ? 0 : DEPOSIT_GBP),
+          paidInFull,
         }
         try {
           await Promise.all([sendClientConfirmation(summary), sendOwnerNotification(summary)])

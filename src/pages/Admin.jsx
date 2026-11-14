@@ -17,6 +17,8 @@ const mapRow = (r) => ({
   style: r.style || null,
   price: Number(r.price) || 0,
   status: r.status || 'Pending',
+  paymentType: r.payment_type || null, // 'deposit' | 'full' | null (unpaid)
+  amountPaid: r.amount_paid != null ? Number(r.amount_paid) : null,
 })
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -34,6 +36,16 @@ const STATUS_STYLES = {
   'Awaiting Payment': 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400',
   Completed: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
 }
+
+const PAYMENT_STYLES = {
+  full: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+  deposit: 'border-gold/40 bg-gold/10 text-gold',
+  unpaid: 'border-ink/20 bg-ink/[0.04] text-ink/50',
+}
+
+// How a booking's payment reads in the portal + exports.
+const paymentLabel = (b) =>
+  b.paymentType === 'full' ? 'Paid in full' : b.paymentType === 'deposit' ? 'Deposit' : 'Unpaid'
 
 // CSV field escaping — quote anything with a comma, quote or newline.
 const csv = (v) => {
@@ -183,17 +195,25 @@ export default function Admin() {
   }, [bookings])
 
   const exportCSV = () => {
-    const header = ['Booking ID', 'Date', 'Client', 'Service', 'Price (GBP)', 'Status']
+    const header = [
+      'Booking ID', 'Date', 'Client', 'Service', 'Price (GBP)', 'Payment', 'Amount Paid (GBP)', 'Status',
+    ]
     const lines = [header.join(',')]
     let total = 0
+    let totalPaid = 0
     sorted.forEach((b) => {
       total += b.price
+      totalPaid += b.amountPaid || 0
       const service = b.style ? `${b.service} — ${b.style}` : b.service
+      const paid = b.amountPaid != null ? b.amountPaid.toFixed(2) : ''
       lines.push(
-        [csv(b.id), b.date, csv(b.client), csv(service), b.price.toFixed(2), b.status].join(','),
+        [
+          csv(b.id), b.date, csv(b.client), csv(service),
+          b.price.toFixed(2), paymentLabel(b), paid, b.status,
+        ].join(','),
       )
     })
-    lines.push(['', '', '', 'Total', total.toFixed(2), ''].join(','))
+    lines.push(['', '', '', 'Total', total.toFixed(2), '', totalPaid.toFixed(2), ''].join(','))
 
     const blob = new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
@@ -208,12 +228,14 @@ export default function Admin() {
 
   const exportPDF = () => {
     const total = sorted.reduce((s, b) => s + b.price, 0)
+    const totalPaid = sorted.reduce((s, b) => s + (b.amountPaid || 0), 0)
     const rows = sorted
       .map((b) => {
         const service = b.style ? `${b.service} — ${b.style}` : b.service
+        const paid = b.amountPaid != null ? `${paymentLabel(b)} · ${gbp(b.amountPaid)}` : paymentLabel(b)
         return `<tr><td>${b.date}</td><td>${b.client}</td><td>${service}</td><td class="r">${gbp(
           b.price,
-        )}</td><td>${b.status}</td></tr>`
+        )}</td><td>${paid}</td><td>${b.status}</td></tr>`
       })
       .join('')
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>VAULT 876 — Bookings Export</title>
@@ -229,9 +251,12 @@ export default function Admin() {
         .meta{font-family:Arial,sans-serif;font-size:11px;color:#777;margin-top:18px}
       </style></head><body>
       <div class="head"><div class="brand">VAULT <b>876</b></div><div class="sub">Bookings · Tax Export</div></div>
-      <table><thead><tr><th>Date</th><th>Client</th><th>Service</th><th class="r">Price</th><th>Status</th></tr></thead>
+      <table><thead><tr><th>Date</th><th>Client</th><th>Service</th><th class="r">Price</th><th>Payment</th><th>Status</th></tr></thead>
       <tbody>${rows}</tbody>
-      <tfoot><tr><td colspan="3">Total revenue</td><td class="r">${gbp(total)}</td><td></td></tr></tfoot></table>
+      <tfoot>
+        <tr><td colspan="3">Total booked value</td><td class="r">${gbp(total)}</td><td colspan="2"></td></tr>
+        <tr><td colspan="3">Total collected online</td><td class="r">${gbp(totalPaid)}</td><td colspan="2"></td></tr>
+      </tfoot></table>
       <div class="meta">Generated ${new Date().toLocaleString('en-GB')} · ${sorted.length} bookings · VAULT 876 Hair &amp; Beauty, Aylesbury</div>
       </body></html>`
     const w = window.open('', '_blank')
@@ -380,13 +405,14 @@ export default function Admin() {
         {/* Table */}
         <div className="mt-5 overflow-hidden rounded-2xl border border-ink/10 bg-surface">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
+            <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
                 <tr className="border-b border-ink/10 text-[0.68rem] uppercase tracking-[0.12em] text-ink/45">
                   <th className="px-5 py-4 font-semibold">Date</th>
                   <th className="px-5 py-4 font-semibold">Client</th>
                   <th className="px-5 py-4 font-semibold">Service</th>
                   <th className="px-5 py-4 text-right font-semibold">Price</th>
+                  <th className="px-5 py-4 font-semibold">Payment</th>
                   <th className="px-5 py-4 font-semibold">Status</th>
                 </tr>
               </thead>
@@ -407,6 +433,20 @@ export default function Admin() {
                     <td className="whitespace-nowrap px-5 py-4 text-right font-display text-base text-gold">
                       {gbp(b.price)}
                     </td>
+                    <td className="whitespace-nowrap px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold ${
+                          PAYMENT_STYLES[b.paymentType] || PAYMENT_STYLES.unpaid
+                        }`}
+                      >
+                        {paymentLabel(b)}
+                      </span>
+                      {b.amountPaid != null && (
+                        <span className="ml-2 text-xs tabular-nums text-ink/45">
+                          {gbp(b.amountPaid)}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-5 py-4">
                       <span
                         className={`inline-flex rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold ${
@@ -420,7 +460,7 @@ export default function Admin() {
                 ))}
                 {loading && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-14 text-center text-ink/45">
+                    <td colSpan={6} className="px-5 py-14 text-center text-ink/45">
                       <span className="inline-flex items-center gap-2">
                         <RefreshCw className="h-4 w-4 animate-spin" /> Loading bookings…
                       </span>
@@ -429,7 +469,7 @@ export default function Admin() {
                 )}
                 {!loading && loadError && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-14 text-center">
+                    <td colSpan={6} className="px-5 py-14 text-center">
                       <p className="font-medium text-red-600 dark:text-red-400">
                         Couldn’t load bookings.
                       </p>
@@ -446,7 +486,7 @@ export default function Admin() {
                 )}
                 {!loading && !loadError && filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-14 text-center text-ink/45">
+                    <td colSpan={6} className="px-5 py-14 text-center text-ink/45">
                       {bookings.length === 0
                         ? 'No bookings yet — once a client books, they’ll appear here.'
                         : `No bookings match “${query}”.`}

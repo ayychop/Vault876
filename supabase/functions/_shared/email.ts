@@ -21,7 +21,8 @@ export interface BookingSummary {
   time: string | null
   lines: BookingLine[]
   total: number
-  depositPaid: number // in GBP
+  amountPaid: number // what Stripe actually captured, in GBP
+  paidInFull: boolean // true = whole booking paid; false = £20 deposit only
 }
 
 const gbp = (n: number) => `£${Number(n).toLocaleString('en-GB')}`
@@ -112,7 +113,11 @@ export async function sendClientConfirmation(b: BookingSummary) {
       <div style="color:#ffffff;font-size:18px;margin-top:4px">${prettyDate(b.date)}${b.time ? ` · ${b.time}` : ''}</div>
       ${linesTable(b.lines, b.total)}
       <div style="font-family:Arial,sans-serif;font-size:12px;color:#8a857a">
-        Deposit paid: <span style="color:#d4af37">${gbp(b.depositPaid)}</span> · balance due in the salon.
+        ${
+          b.paidInFull
+            ? `Paid in full: <span style="color:#d4af37">${gbp(b.amountPaid)}</span> · nothing further to pay.`
+            : `Deposit paid: <span style="color:#d4af37">${gbp(b.amountPaid)}</span> · balance due in the salon.`
+        }
       </div>
     </div>
     <div style="text-align:center;margin:26px 0 8px">
@@ -128,7 +133,7 @@ export async function sendClientConfirmation(b: BookingSummary) {
 
 export async function sendOwnerNotification(b: BookingSummary) {
   const inner = `
-    <p style="color:#ffffff;font-size:22px;margin:0 0 6px">New booking — deposit paid ✅</p>
+    <p style="color:#ffffff;font-size:22px;margin:0 0 6px">New booking — ${b.paidInFull ? 'paid in full' : 'deposit paid'} ✅</p>
     <div style="background:#141210;border:1px solid #26231c;border-radius:14px;padding:20px 22px;margin:18px 0">
       <div style="color:#ffffff;font-size:18px">${b.clientName}</div>
       <div style="font-family:Arial,sans-serif;font-size:13px;color:#b8b2a6;margin-top:4px">
@@ -138,6 +143,13 @@ export async function sendOwnerNotification(b: BookingSummary) {
       <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8a857a">When</div>
       <div style="color:#ffffff;font-size:17px;margin-top:4px">${prettyDate(b.date)}${b.time ? ` · ${b.time}` : ''}</div>
       ${linesTable(b.lines, b.total)}
+      <div style="font-family:Arial,sans-serif;font-size:12px;color:#8a857a">
+        ${
+          b.paidInFull
+            ? `Paid in full online: <span style="color:#d4af37">${gbp(b.amountPaid)}</span>.`
+            : `Deposit taken: <span style="color:#d4af37">${gbp(b.amountPaid)}</span> · balance due in the salon.`
+        }
+      </div>
     </div>
     <p style="font-family:Arial,sans-serif;font-size:13px;color:#8a857a;margin:0">
       View everything in your <a href="${SITE_URL}/admin" style="color:#d4af37">owner portal</a>.
