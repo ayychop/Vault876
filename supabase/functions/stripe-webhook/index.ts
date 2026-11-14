@@ -54,6 +54,35 @@ Deno.serve(async (req) => {
     // What Stripe actually captured. amount_total is in pence → store GBP.
     const amountPaid =
       typeof session.amount_total === 'number' ? session.amount_total / 100 : null
+
+    // --- "Pay what you owe" custom payments (Phase 7) -----------------------
+    // These carry our own kind + payment_id metadata and live in the `payments`
+    // table — there's no booking to confirm. Mark it Paid and return. Idempotent
+    // via the status guard, so Stripe retries are harmless.
+    const paymentId = session.metadata?.payment_id
+    if (session.metadata?.kind === 'custom_payment' && paymentId) {
+      const admin = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      )
+      const { error } = await admin
+        .from('payments')
+        .update({
+          status: 'Paid',
+          amount_paid: amountPaid,
+          stripe_payment_intent_id: paymentIntentId,
+          stripe_session_id: session.id,
+          paid_at: new Date().toISOString(),
+        })
+        .eq('id', paymentId)
+        .neq('status', 'Paid')
+      if (error) console.error('[stripe-webhook] payment update failed:', error)
+      return new Response(JSON.stringify({ received: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
     // Trust our own metadata first; fall back to the captured total (anything
     // above the £20 deposit is a full payment).
     const paymentType =

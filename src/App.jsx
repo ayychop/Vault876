@@ -5,6 +5,7 @@ import Lenis from 'lenis'
 import Landing from './pages/Landing.jsx'
 import Booking from './pages/Booking.jsx'
 import BookingSuccess from './pages/BookingSuccess.jsx'
+import Pay from './pages/Pay.jsx'
 import Admin from './pages/Admin.jsx'
 import EntryGate from './components/EntryGate.jsx'
 import BookNow from './components/BookNow.jsx'
@@ -92,6 +93,7 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="/booking/success" element={<BookingSuccess />} />
+            <Route path="/pay" element={<Pay />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </motion.div>

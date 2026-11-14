@@ -249,6 +249,16 @@ export default function MediaManager() {
                 </div>
               )}
 
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => { setCrop({ x: 0, y: 0 }); setZoom(1); setFilters(FILTER_DEFAULTS) }}
+                  className="text-sm text-ink/50 underline-offset-2 transition-colors hover:text-ink hover:underline"
+                >
+                  Reset adjustments
+                </button>
+              </div>
+
               {/* Presets */}
               <div className="mt-6">
                 <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-ink/45">

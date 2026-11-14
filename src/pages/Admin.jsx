@@ -61,6 +61,7 @@ export default function Admin() {
   const [query, setQuery] = useState('')
   const [bookings, setBookings] = useState([])
   const [services, setServices] = useState([])
+  const [payments, setPayments] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [session, setSession] = useState(null)
@@ -75,6 +76,7 @@ export default function Admin() {
     if (!supabase) {
       setBookings(demoBookings)
       setServices([])
+      setPayments([])
       setLoading(false)
       return
     }
@@ -90,6 +92,7 @@ export default function Admin() {
       setLoadError('Your session has expired — please sign in again.')
       setBookings([])
       setServices([])
+      setPayments([])
       setLoading(false)
       return
     }
@@ -105,13 +108,14 @@ export default function Admin() {
       /* token decode is best-effort for logging only */
     }
 
-    const [bk, sv] = await Promise.all([
+    const [bk, sv, pm] = await Promise.all([
       supabase
         .from('bookings')
         .select('*')
         .order('appointment_date', { ascending: false, nullsFirst: false })
         .order('created_at', { ascending: false }),
       supabase.from('services').select('*').order('sort_order', { ascending: true }),
+      supabase.from('payments').select('*').order('created_at', { ascending: false }),
     ])
 
     if (bk.error) {
@@ -121,6 +125,9 @@ export default function Admin() {
       setBookings((bk.data || []).map(mapRow))
     }
     setServices(sv.data || [])
+    // The payments table only exists once phase7.sql has run; ignore its error
+    // so the dashboard still loads everything else.
+    setPayments(pm.error ? [] : pm.data || [])
     setLoading(false)
   }
 
@@ -561,6 +568,70 @@ export default function Admin() {
                   )}
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* "Pay what you owe" payments — balances clients settled online */}
+        {payments.length > 0 && (
+          <section className="mt-14">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <h2 className="font-display text-2xl font-bold">Online payments</h2>
+                <p className="mt-1 text-sm text-ink/45">
+                  Balances & amounts clients paid from the “Pay your balance” page.
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="label-caps text-ink/45">Collected</div>
+                <div className="font-display text-2xl text-gold">
+                  {gbp(
+                    payments
+                      .filter((p) => p.status === 'Paid')
+                      .reduce((s, p) => s + (Number(p.amount_paid ?? p.amount) || 0), 0),
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 overflow-hidden rounded-2xl border border-ink/10 bg-surface">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[560px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-ink/10 text-[0.68rem] uppercase tracking-[0.12em] text-ink/45">
+                      <th className="px-5 py-4 font-semibold">Date</th>
+                      <th className="px-5 py-4 font-semibold">Client</th>
+                      <th className="px-5 py-4 font-semibold">For</th>
+                      <th className="px-5 py-4 text-right font-semibold">Amount</th>
+                      <th className="px-5 py-4 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payments.map((p) => (
+                      <tr key={p.id} className="border-b border-ink/8 last:border-0">
+                        <td className="whitespace-nowrap px-5 py-4 tabular-nums text-ink/70">
+                          {p.created_at ? fmtDate(String(p.created_at).slice(0, 10)) : '—'}
+                        </td>
+                        <td className="px-5 py-4 font-medium text-ink">{p.name || '—'}</td>
+                        <td className="px-5 py-4 text-ink/60">{p.note || '—'}</td>
+                        <td className="whitespace-nowrap px-5 py-4 text-right font-display text-base text-gold">
+                          {gbp(Number(p.amount_paid ?? p.amount) || 0)}
+                        </td>
+                        <td className="px-5 py-4">
+                          <span
+                            className={`inline-flex rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold ${
+                              p.status === 'Paid'
+                                ? PAYMENT_STYLES.full
+                                : STATUS_STYLES['Awaiting Payment']
+                            }`}
+                          >
+                            {p.status === 'Paid' ? 'Paid' : 'Pending'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
         )}

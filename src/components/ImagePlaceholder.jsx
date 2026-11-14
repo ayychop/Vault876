@@ -52,6 +52,16 @@ export default function ImagePlaceholder({
             style={filter ? { filter } : undefined}
           />
         )}
+        {/* Premium finish kept OVER her upload so the site never loses its feel:
+            a warm gold wash pooling to a corner, the signature diagonal sheen
+            sweep, and a fine inset frame — exactly the motifs the placeholders
+            use, now grading her own photo. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_70%_at_78%_92%,rgba(212,175,55,0.14),transparent_62%)] mix-blend-screen"
+        />
+        <div className="placeholder-sheen pointer-events-none absolute inset-0" />
+        <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
         {label && (
           <>
             <div

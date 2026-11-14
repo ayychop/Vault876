@@ -47,6 +47,15 @@ export default function Footer() {
                 {site.phoneDisplay}
               </a>
             </div>
+            <p className="mt-5 text-sm text-ink/50">
+              Already been in?{' '}
+              <Link
+                to="/pay"
+                className="font-medium text-gold underline-offset-2 transition-colors hover:text-gold-soft hover:underline"
+              >
+                Pay your balance online →
+              </Link>
+            </p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="hidden lg:block">
